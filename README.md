@@ -1,43 +1,6 @@
 Simulating PCR Diagnostics to Discriminate HPV Serotypes by DNA Sequence
 ================
 
-`---`
-
-    title: Title of submission to PLOS journal
-    author:
-      - name: Alice Anonymous
-        email: alice@example.com
-        affiliation: Some Institute of Technology
-        corresponding: alice@example.com
-      - name: Bob Security
-        email: bob@example.com
-        affiliation: Another University
-    address:
-      - code: Some Institute of Technology
-        address: Department, Street, City, State, Zip
-      - code: Another University
-        address: Department, Street, City, State, Zip
-    abstract: |
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-      
-    author_summary: |
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    bibliography: citations.bib
-    includes:
-      in_header: 
-        - preamble.tex
-        - common.tex
-    output: rticles::plos_article
-
-`---`
-
-    This PNAS journal template is provided to help you write your work in the
-    correct journal format. Instructions for use are provided below.
-    
-    Note: please start your introduction WITHOUT including the word
-    "Introduction" as a section heading (except for math articles in the
-    Physical Sciences section); this heading is implied in the first
-    paragraphs.
 
 #### Installing OligAarrayAux
 
