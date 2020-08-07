@@ -3,33 +3,31 @@ Simulating PCR Diagnostics to Discriminate HPV Serotypes by DNA Sequence
 
 `---`
 
-``` yaml
-title: Title of submission to PLOS journal
-author:
-  - name: Alice Anonymous
-    email: alice@example.com
-    affiliation: Some Institute of Technology
-    corresponding: alice@example.com
-  - name: Bob Security
-    email: bob@example.com
-    affiliation: Another University
-address:
-  - code: Some Institute of Technology
-    address: Department, Street, City, State, Zip
-  - code: Another University
-    address: Department, Street, City, State, Zip
-abstract: |
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  
-author_summary: |
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-bibliography: citations.bib
-includes:
-  in_header: 
-    - preamble.tex
-    - common.tex
-output: rticles::plos_article
-```
+    title: Title of submission to PLOS journal
+    author:
+      - name: Alice Anonymous
+        email: alice@example.com
+        affiliation: Some Institute of Technology
+        corresponding: alice@example.com
+      - name: Bob Security
+        email: bob@example.com
+        affiliation: Another University
+    address:
+      - code: Some Institute of Technology
+        address: Department, Street, City, State, Zip
+      - code: Another University
+        address: Department, Street, City, State, Zip
+    abstract: |
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+      
+    author_summary: |
+      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    bibliography: citations.bib
+    includes:
+      in_header: 
+        - preamble.tex
+        - common.tex
+    output: rticles::plos_article
 
 `---`
 
@@ -145,17 +143,22 @@ dbConn <- dbConnect(SQLite(), ':memory:')
 Oral.L1.seqs <- readDNAStringSet('HPV.oral.L1.fasta') %>% doAlignment
 Oral.L1.vars <- read.csv('HPV.oral.L1.csv', stringsAsFactors = F)
 
-head(Oral.L1.seqs)
+print(Oral.L1.seqs)
 ```
 
-    ##   A DNAStringSet instance of length 6
-    ##     width seq                                               names               
-    ## [1]   607 -----------------------...----------------------- gi|944543704|gb|K...
-    ## [2]   607 -----------------------...----------------------- gi|944543703|gb|K...
-    ## [3]   607 -----------------------...----------------------- gi|944543701|gb|K...
-    ## [4]   607 -----------------------...----------------------- gi|944543699|gb|K...
-    ## [5]   607 -----------------------...----------------------- gi|944543697|gb|K...
-    ## [6]   607 -----------------------...----------------------- gi|944543695|gb|K...
+    ##   A DNAStringSet instance of length 31
+    ##      width seq                                              names               
+    ##  [1]   607 -----------------------...---------------------- gi|944543704|gb|K...
+    ##  [2]   607 -----------------------...---------------------- gi|944543703|gb|K...
+    ##  [3]   607 -----------------------...---------------------- gi|944543701|gb|K...
+    ##  [4]   607 -----------------------...---------------------- gi|944543699|gb|K...
+    ##  [5]   607 -----------------------...---------------------- gi|944543697|gb|K...
+    ##  ...   ... ...
+    ## [27]   607 -----------------------...GTTAATAAACTCCATTATCGAA gi|440573440|gb|K...
+    ## [28]   607 -----------------------...GTTAGTTAACAGCACTATTCAG gi|440573438|gb|K...
+    ## [29]   607 -----------------------...ATTAAAAAATACAGTAATTGAA gi|440573436|gb|K...
+    ## [30]   607 -----------------------...ATTAGTAAATACTGTAATTGAA gi|440573434|gb|K...
+    ## [31]   607 -----------------------...GTTAATAAATACAGTAATTGAA gi|440573432|gb|K...
 
 ``` r
 Seqs2DB(Oral.L1.seqs, 'XStringSet', dbConn, '')
@@ -164,7 +167,7 @@ Seqs2DB(Oral.L1.seqs, 'XStringSet', dbConn, '')
     ## Adding 31 sequences to the database.
     ## 
     ## 31 total sequences in table Seqs.
-    ## Time difference of 0.11 secs
+    ## Time difference of 0.09 secs
 
 ``` r
 Add2DB(Oral.L1.vars %>% mutate(identifier = SVAR), dbConn)
@@ -234,7 +237,7 @@ tiles.L1 <- TileSeqs(
 
     ## ================================================================================
     ## 
-    ## Time difference of 7.29 secs
+    ## Time difference of 7.18 secs
 
 ``` r
 print(
@@ -243,12 +246,12 @@ print(
 ```
 
     ##   misprime                   target_site
-    ## 1     TRUE AAGCAGACACAGTTATGTATTTTGGGCTG
-    ## 2    FALSE GGTGCTACTGGTCATCCATATTTTAATAG
-    ## 3    FALSE CCCATTGGTGAGCATTGGGCCAAGGGCAC
-    ## 4    FALSE       TCATGCTGGTCAGCCTGGTGAGT
-    ## 5    FALSE AAATGCTAGTGCTTATGCAGCAAATGCAG
-    ## 6    FALSE GAAAGACTCCAACGACGCAGAGAAACACA
+    ## 1    FALSE TTCCTAAGGTTTCTGCATACCAATATAGA
+    ## 2    FALSE GACAATGCTGACAGCCGGGACAATATATC
+    ## 3    FALSE       TACATTAAAGGCTCTGGGTCTAC
+    ## 4    FALSE TGTTTAAACTTAGAGGTATTGAGGTTGTA
+    ## 5     TRUE GAAACACAACGTTTAGTGTGGGCCTGTGT
+    ## 6    FALSE       ATTTTCAGGGTGCCACAGATAAT
 
 ``` r
 oligos.L1 <- DesignPrimers(
@@ -438,7 +441,7 @@ for (i in 1:nsets)
 
 ![](HPV-Serovars_files/figure-gfm/melt_curves-1.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-2.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-3.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-4.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-5.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-6.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-7.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-8.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-9.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-10.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-11.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-12.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-13.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-14.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-15.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-16.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-17.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-18.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-19.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-20.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-21.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-22.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-23.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-24.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-25.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-26.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-27.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-28.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-29.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-30.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-31.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-32.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-33.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-34.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-35.png)<!-- -->
 
-Some more primer designs (RFLP, sequencing, etc.):
+More primer designs (RFLP, sequencing, etc.):
 
 ``` r
 TYPE <- 'sequence'
@@ -446,8 +449,8 @@ MIN_LENGTH <- 15
 MAX_LENGTH <- 25
 MIN_SIZE <- 60
 MAX_SIZE <- 100
-RESOLUTION <- 3
 LEVELS <- 2
+RESOLUTION <- 3
 ENZYMES <- NULL
 
 DesignSignatures(
@@ -466,17 +469,17 @@ DesignSignatures(
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
     ## 
-    ## Time difference of 0.41 secs
+    ## Time difference of 0.42 secs
     ## 
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
     ## 
-    ## Time difference of 59.77 secs
+    ## Time difference of 60.84 secs
     ## 
     ## Selecting the most common primer sequences:
     ## ================================================================================
     ## 
-    ## Time difference of 13.69 secs
+    ## Time difference of 13.78 secs
     ## 
     ## Determining PCR products from each group:
     ## ================================================================================
@@ -491,7 +494,7 @@ DesignSignatures(
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
     ## 
-    ## Time difference of 1.55 secs
+    ## Time difference of 1.56 secs
 
     ##                forward_primer            reverse_primer score coverage products
     ## 1      CCAACGACGCAGAGAAACACAA  ATGTCTTGCAATGTTGCCTTAGGT     0      0.2        0
@@ -697,6 +700,3085 @@ DesignSignatures(
     ## 100                    HPV16, HPV11, HPV4, HPV17
 
 ``` r
+data(RESTRICTION_ENZYMES)
+
+TYPE <- 'melt'
+LEVELS <- 4
+MIN_LENGTH <- 15
+MAX_LENGTH <- 25
+MIN_SIZE <- 60
+MAX_SIZE <- 200
+RESOLUTION <- seq(75, 300, 15)
+
+lapply(
+  # Random RE combinations
+  rep(sample(1:3, 3), 3), 
+  function(i)
+    DesignSignatures(
+      dbConn,
+      type=TYPE,
+      enzymes=RESTRICTION_ENZYMES[i],
+      minProductSize=MIN_SIZE,
+      maxProductSize=MAX_SIZE,
+      resolution=RESOLUTION, 
+      levels=LEVELS
+    )
+)
+```
+
+    ## Tallying 8-mers for 5 groups:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.36 secs
+    ## 
+    ## Designing primer sequences based on the group 'HPV18':
+    ## ================================================================================
+    ## 
+    ## Time difference of 61.04 secs
+    ## 
+    ## Selecting the most common primer sequences:
+    ## ================================================================================
+    ## 
+    ## Time difference of 14.29 secs
+    ## 
+    ## Determining PCR products from each group:
+    ## ================================================================================
+    ## 
+    ## Time difference of 6.3 secs
+    ## 
+    ## Scoring primer pair combinations:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.01 secs
+    ## 
+    ## Choosing optimal forward and reverse pairs:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.48 secs
+    ## 
+    ## Finding the best restriction enzyme:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.95 secs
+    ## Tallying 8-mers for 5 groups:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.39 secs
+    ## 
+    ## Designing primer sequences based on the group 'HPV18':
+    ## ================================================================================
+    ## 
+    ## Time difference of 63.94 secs
+    ## 
+    ## Selecting the most common primer sequences:
+    ## ================================================================================
+    ## 
+    ## Time difference of 14.26 secs
+    ## 
+    ## Determining PCR products from each group:
+    ## ================================================================================
+    ## 
+    ## Time difference of 6.33 secs
+    ## 
+    ## Scoring primer pair combinations:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.01 secs
+    ## 
+    ## Choosing optimal forward and reverse pairs:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.49 secs
+    ## 
+    ## Finding the best restriction enzyme:
+    ## ================================================================================
+    ## 
+    ## Time difference of 2.07 secs
+    ## Tallying 8-mers for 5 groups:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.35 secs
+    ## 
+    ## Designing primer sequences based on the group 'HPV18':
+    ## ================================================================================
+    ## 
+    ## Time difference of 62.11 secs
+    ## 
+    ## Selecting the most common primer sequences:
+    ## ================================================================================
+    ## 
+    ## Time difference of 14.34 secs
+    ## 
+    ## Determining PCR products from each group:
+    ## ================================================================================
+    ## 
+    ## Time difference of 5.79 secs
+    ## 
+    ## Scoring primer pair combinations:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.01 secs
+    ## 
+    ## Choosing optimal forward and reverse pairs:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.49 secs
+    ## 
+    ## Finding the best restriction enzyme:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.88 secs
+    ## Tallying 8-mers for 5 groups:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.32 secs
+    ## 
+    ## Designing primer sequences based on the group 'HPV18':
+    ## ================================================================================
+    ## 
+    ## Time difference of 60.99 secs
+    ## 
+    ## Selecting the most common primer sequences:
+    ## ================================================================================
+    ## 
+    ## Time difference of 14.19 secs
+    ## 
+    ## Determining PCR products from each group:
+    ## ================================================================================
+    ## 
+    ## Time difference of 6.03 secs
+    ## 
+    ## Scoring primer pair combinations:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.01 secs
+    ## 
+    ## Choosing optimal forward and reverse pairs:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.49 secs
+    ## 
+    ## Finding the best restriction enzyme:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.9 secs
+    ## Tallying 8-mers for 5 groups:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.35 secs
+    ## 
+    ## Designing primer sequences based on the group 'HPV18':
+    ## ================================================================================
+    ## 
+    ## Time difference of 61.4 secs
+    ## 
+    ## Selecting the most common primer sequences:
+    ## ================================================================================
+    ## 
+    ## Time difference of 14.15 secs
+    ## 
+    ## Determining PCR products from each group:
+    ## ================================================================================
+    ## 
+    ## Time difference of 5.99 secs
+    ## 
+    ## Scoring primer pair combinations:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.01 secs
+    ## 
+    ## Choosing optimal forward and reverse pairs:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.48 secs
+    ## 
+    ## Finding the best restriction enzyme:
+    ## ================================================================================
+    ## 
+    ## Time difference of 2.09 secs
+    ## Tallying 8-mers for 5 groups:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.32 secs
+    ## 
+    ## Designing primer sequences based on the group 'HPV18':
+    ## ================================================================================
+    ## 
+    ## Time difference of 61.33 secs
+    ## 
+    ## Selecting the most common primer sequences:
+    ## ================================================================================
+    ## 
+    ## Time difference of 14.16 secs
+    ## 
+    ## Determining PCR products from each group:
+    ## ================================================================================
+    ## 
+    ## Time difference of 5.77 secs
+    ## 
+    ## Scoring primer pair combinations:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.01 secs
+    ## 
+    ## Choosing optimal forward and reverse pairs:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.52 secs
+    ## 
+    ## Finding the best restriction enzyme:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.89 secs
+    ## Tallying 8-mers for 5 groups:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.33 secs
+    ## 
+    ## Designing primer sequences based on the group 'HPV18':
+    ## ================================================================================
+    ## 
+    ## Time difference of 61.39 secs
+    ## 
+    ## Selecting the most common primer sequences:
+    ## ================================================================================
+    ## 
+    ## Time difference of 14.67 secs
+    ## 
+    ## Determining PCR products from each group:
+    ## ================================================================================
+    ## 
+    ## Time difference of 6.02 secs
+    ## 
+    ## Scoring primer pair combinations:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.01 secs
+    ## 
+    ## Choosing optimal forward and reverse pairs:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.5 secs
+    ## 
+    ## Finding the best restriction enzyme:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.88 secs
+    ## Tallying 8-mers for 5 groups:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.34 secs
+    ## 
+    ## Designing primer sequences based on the group 'HPV18':
+    ## ================================================================================
+    ## 
+    ## Time difference of 61.18 secs
+    ## 
+    ## Selecting the most common primer sequences:
+    ## ================================================================================
+    ## 
+    ## Time difference of 14.64 secs
+    ## 
+    ## Determining PCR products from each group:
+    ## ================================================================================
+    ## 
+    ## Time difference of 5.72 secs
+    ## 
+    ## Scoring primer pair combinations:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.01 secs
+    ## 
+    ## Choosing optimal forward and reverse pairs:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.46 secs
+    ## 
+    ## Finding the best restriction enzyme:
+    ## ================================================================================
+    ## 
+    ## Time difference of 2.18 secs
+    ## Tallying 8-mers for 5 groups:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.34 secs
+    ## 
+    ## Designing primer sequences based on the group 'HPV18':
+    ## ================================================================================
+    ## 
+    ## Time difference of 60.99 secs
+    ## 
+    ## Selecting the most common primer sequences:
+    ## ================================================================================
+    ## 
+    ## Time difference of 14.76 secs
+    ## 
+    ## Determining PCR products from each group:
+    ## ================================================================================
+    ## 
+    ## Time difference of 6.35 secs
+    ## 
+    ## Scoring primer pair combinations:
+    ## ================================================================================
+    ## 
+    ## Time difference of 0.01 secs
+    ## 
+    ## Choosing optimal forward and reverse pairs:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.61 secs
+    ## 
+    ## Finding the best restriction enzyme:
+    ## ================================================================================
+    ## 
+    ## Time difference of 1.99 secs
+
+    ## [[1]]
+    ##                 forward_primer             reverse_primer score coverage
+    ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
+    ## 2   GCCCCCCTTTAGAACTTAAAAACACA  CCCCATAAGGATCTGCAGACATTTG     0      0.2
+    ## 3   GCCCCCCTTTAGAACTTAAAAACACA   TGGAATCCCCATAAGGATCTGCAG     0      0.2
+    ## 4       CCAACGACGCAGAGAAACACAA      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 5       CCAACGACGCAGAGAAACACAA       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 6       CCAACGACGCAGAGAAACACAA CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 7       CCAACGACGCAGAGAAACACAA        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 8   GGTGCAGTTACCTGACCCAAATAAAT         GTGGCGGCATGGGAACTT     0      0.2
+    ## 9   GGTGCAGTTACCTGACCCAAATAAAT      CGGCATGGGAACTTTCAGTGT     0      0.2
+    ## 10  GGTGCAGTTACCTGACCCAAATAAAT       GCCCACTAAGGCCAACACCT     0      0.2
+    ## 11  GGTGCAGTTACCTGACCCAAATAAAT          GTGGCGGCATGGGAACT     0      0.2
+    ## 12  GGTGCAGTTACCTGACCCAAATAAAT    GGCATGGGAACTTTCAGTGTCAT     0      0.2
+    ## 13  GGTGCAGTTACCTGACCCAAATAAAT       CACCTAAWGGCTGACCACGG     0      0.2
+    ## 14  GGTGCAGTTACCTGACCCAAATAAAT     CMACACCTAAWGGCTGACCACG     0      0.2
+    ## 15  GGTGCAGTTACCTGACCCAAATAAAT    CCCACTAAGGCCAACACCTAAAG     0      0.2
+    ## 16  GGTGCAGTTACCTGACCCAAATAAAT     CGGCATGGGAACTTTCAGTGTC     0      0.2
+    ## 17  GGTGCAGTTACCTGACCCAAATAAAT   GGCATGGGAACTTTCAGTGTCATC     0      0.2
+    ## 18  GGTGCAGTTACCTGACCCAAATAAAT        CCTAAWGGCTGACCACGGC     0      0.2
+    ## 19  GGTGCAGTTACCTGACCCAAATAAAT    CCAATTTCCACTCCAACACAGGC     0      0.2
+    ## 20  GGTGCAGTTACCTGACCCAAATAAAT          AAWGGCTGACCACGGCC     0      0.2
+    ## 21  GGTGCAGTTACCTGACCCAAATAAAT      GCCMACACCTAAWGGCTGACC     0      0.2
+    ## 22  GGTGCAGTTACCTGACCCAAATAAAT        GCCCACTAAGGCCAACACC     0      0.2
+    ## 23  GGTGCAGTTACCTGACCCAAATAAAT       TGACCACGGCCAATTTCCAC     0      0.2
+    ## 24  GGTGCAGTTACCTGACCCAAATAAAT     CCMACACCTAAWGGCTGACCAC     0      0.2
+    ## 25  GGTGCAGTTACCTGACCCAAATAAAT        TGCCCACTAAGGCCAACAC     0      0.2
+    ## 26  GGTGCAGTTACCTGACCCAAATAAAT      GCCCACTAAGGCCAACACCTA     0      0.2
+    ## 27  GGTGCAGTTACCTGACCCAAATAAAT     GGCATGGGAACTTTCAGTGTCA     0      0.2
+    ## 28  GGTGCAGTTACCTGACCCAAATAAAT       CTGACCACGGCCAATTTCCA     0      0.2
+    ## 29  GGTGCAGTTACCTGACCCAAATAAAT       CACGGCCAATTTCCACTCCA     0      0.2
+    ## 30  GGTGCAGTTACCTGACCCAAATAAAT     GCCMACACCTAAWGGCTGACCA     0      0.2
+    ## 31  GGTGCAGTTACCTGACCCAAATAAAT     GCCCACTAAKGCCMACACCTAA     0      0.2
+    ## 32  GGTGCAGTTACCTGACCCAAATAAAT      CACGGCCAATTTCCACTCCAA     0      0.2
+    ## 33  GGTGCAGTTACCTGACCCAAATAAAT    GCCCACTAAGGCCAACACCTAAA     0      0.2
+    ## 34    GCATGCTGCATGCCATAAATGTAT      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 35      TCCCAGCAGTAAGCAACAATGG    CCATATCCGACCCTGTGTCTGTT     0      0.2
+    ## 36      TCCCAGCAGTAAGCAACAATGG   AATCTACCATATCCGACCCTGTGT     0      0.2
+    ## 37      TCCCAGCAGTAAGCAACAATGG     CCATATCCGACCCTGTGTCTGT     0      0.2
+    ## 38      TCCCAGCAGTAAGCAACAATGG  TGAAATCTACCATATCCGACCCTGT     0      0.2
+    ## 39      TCCCAGCAGTAAGCAACAATGG    CTACCATATCCGACCCTGTGTCT     0      0.2
+    ## 40      TCCCAGCAGTAAGCAACAATGG TGAAATCTACCATATCCGACCCTGTG     0      0.2
+    ## 41      TCCCAGCAGTAAGCAACAATGG     ACCATATCCGACCCTGTGTCTG     0      0.2
+    ## 42      TCCCAGCAGTAAGCAACAATGG   CGACCCTGTGTCTGTTGCATTTTC     0      0.2
+    ## 43      TCCCAGCAGTAAGCAACAATGG ACAATAGCCTGTACATAAAACCAGCC     0      0.2
+    ## 44     CCAACGACGCAGAGAAACACAAG      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 45     CCAACGACGCAGAGAAACACAAG       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 46     CCAACGACGCAGAGAAACACAAG CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 47     CCAACGACGCAGAGAAACACAAG        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 48       GCTTTGAGGATCCAACACGGC     GCAGTGAAGTGTTCAGTTCCGT     0      0.2
+    ## 49       GCTTTGAGGATCCAACACGGC     GTGTTCAGTTCCGTGCACAGAT     0      0.2
+    ## 50       GCTTTGAGGATCCAACACGGC    GCAGTGAAGTGTTCAGTTCCGTG     0      0.2
+    ## 51       GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 52       GCTTTGAGGATCCAACACGGC      AGTGTTCAGTTCCGTGCACAG     0      0.2
+    ## 53       GCTTTGAGGATCCAACACGGC     AGTGAAGTGTTCAGTTCCGTGC     0      0.2
+    ## 54       GCTTTGAGGATCCAACACGGC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 55       GCTTTGAGGATCCAACACGGC      GTGTTCAGTTCCGTGCACAGA     0      0.2
+    ## 56       GCTTTGAGGATCCAACACGGC     GTGAAGTGTTCAGTTCCGTGCA     0      0.2
+    ## 57       GCTTTGAGGATCCAACACGGC     GAAGTGTTCAGTTCCGTGCACA     0      0.2
+    ## 58      TGTGCACGGAACTGAACACTTC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 59      TGTGCACGGAACTGAACACTTC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 60           TCGTGCTGCAACCGAGC   ATGTCTTGCAATGTTGCCTTAGGT     0      0.2
+    ## 61           TCGTGCTGCAACCGAGC  GTTGCCTTAGGTCCATGCATACTTA     0      0.2
+    ## 62           TCGTGCTGCAACCGAGC GTTGCCTTAGGTCCATGCATACTTAA     0      0.2
+    ## 63       CAGGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 64         GGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 65          CCCCCCCGCCAACTACTA     GTGCAGCATCCTTTTGACAGGT     0      0.2
+    ## 66          CCCCCCCGCCAACTACTA   CCTTATTTTCAGCYGGTGCAGCAT     0      0.2
+    ## 67          CCCCCCCGCCAACTACTA         TTTCAGCYGGTGCAGCAT     0      0.2
+    ## 68          CCCCCCCGCCAACTACTA  GTGCAGCATCCTTTTGACAGGTAAT     0      0.2
+    ## 69          CCCCCCCGCCAACTACTA  CCTTATTTTCAGCYGGTGCAGCATC     0      0.2
+    ## 70          CCCCCCCGCCAACTACTA    TCCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 71          CCCCCCCGCCAACTACTA     CCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 72          CCCCCCCGCCAACTACTA    GTGCAGCATCCTTTTGACAGGTA     0      0.2
+    ## 73          CCCCCCCGCCAACTACTA GTGCAGCATCCTTTTGACAGGTAATA     0      0.2
+    ## 74          CCCCCCCGCCAACTACTA CAGCATCCTTTTGACAGGTAATAGCA     0      0.2
+    ## 75          CCCCCCCGCCAACTACTA    CCTTATTTTCAGCYGGTGCAGCA     0      0.2
+    ## 76          CCCCCCCGCCAACTACTA          TTTCAGCYGGTGCAGCA     0      0.2
+    ## 77          CCCCCCCGCCAACTACTA   GTGCAGCATCCTTTTGACAGGTAA     0      0.2
+    ## 78      TGATCTGTGCACGGAACTGAAC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 79      TGATCTGTGCACGGAACTGAAC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 80   ACCTAAGGCAACATTGCAAGACATT CATACACAACATTGTGTGACGTTGTG     0      0.2
+    ## 81   ACCTAAGGCAACATTGCAAGACATT       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 82   ACCTAAGGCAACATTGCAAGACATT CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 83   ACCTAAGGCAACATTGCAAGACATT        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 84        CGGCGACCCTACAAGCTACC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 85        CGGCGACCCTACAAGCTACC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 86    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGGAACACCAAAGTT     0      0.2
+    ## 87    TCTCCTGTACCTGGGCAATATGAT        GGGGGGGGAACACCAAAGT     0      0.2
+    ## 88    TCTCCTGTACCTGGGCAATATGAT          AGTAGTTGGCGGGGGGG     0      0.2
+    ## 89    TCTCCTGTACCTGGGCAATATGAT      CAAACTAGTAGTTGGCGGGGG     0      0.2
+    ## 90    TCTCCTGTACCTGGGCAATATGAT      CCAAACTAGTAGTTGGCGGGG     0      0.2
+    ## 91    TCTCCTGTACCTGGGCAATATGAT         GGGGGGGGAACACCAAAG     0      0.2
+    ## 92    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGAACACCAAAGTTC     0      0.2
+    ## 93    TCTCCTGTACCTGGGCAATATGAT          CGGGGGGGGAACACCAA     0      0.2
+    ## 94    TCTCCTGTACCTGGGCAATATGAT         CGGGGGGGGAACACCAAA     0      0.2
+    ## 95   GCATGCTGCATGCCATAAATGTATA      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 96       TGCCGCCACGTCTAATGTTTC GCACAGCCCAAAATACATAACTGTGT     0      0.2
+    ## 97       TGCCGCCACGTCTAATGTTTC  GGCACAGCCCAAAATACATAACTGT     0      0.2
+    ## 98       TGCCGCCACGTCTAATGTTTC GCCCAAAATACATAACTGTGTCTGCT     0      0.2
+    ## 99       TGCCGCCACGTCTAATGTTTC   GGGCACAGCCCAAAATACATAACT     0      0.2
+    ## 100      TGCCGCCACGTCTAATGTTTC GGCACAGCCCAAAATACATAACTGTG     0      0.2
+    ##     products similar_signatures        missing_signatures enzyme digest_score
+    ## 1          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 2          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 3          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 4          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 5          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 6          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 7          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 8          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 9          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 10         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 11         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 12         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 13         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 14         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 15         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 16         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 17         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 18         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 19         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 20         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 21         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 22         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 23         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 24         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 25         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 26         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 27         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 28         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 29         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 30         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 31         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 32         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 33         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 34         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 35         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 36         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 37         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 38         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 39         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 40         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 41         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 42         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 43         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 44         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 45         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 46         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 47         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 48         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 49         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 50         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 51         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 52         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 53         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 54         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 55         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 56         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 57         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 58         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 59         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 60         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 61         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 62         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 63         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 64         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 65         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 66         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 67         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 68         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 69         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 70         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 71         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 72         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 73         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 74         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 75         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 76         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 77         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 78         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 79         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 80         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 81         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 82         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 83         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 84         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 85         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 86         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 87         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 88         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 89         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 90         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 91         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 92         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 93         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 94         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 95         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 96         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 97         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 98         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 99         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 100        0                    HPV16, HPV11, HPV4, HPV17                   0
+    ##     fragments
+    ## 1           0
+    ## 2           0
+    ## 3           0
+    ## 4           0
+    ## 5           0
+    ## 6           0
+    ## 7           0
+    ## 8           0
+    ## 9           0
+    ## 10          0
+    ## 11          0
+    ## 12          0
+    ## 13          0
+    ## 14          0
+    ## 15          0
+    ## 16          0
+    ## 17          0
+    ## 18          0
+    ## 19          0
+    ## 20          0
+    ## 21          0
+    ## 22          0
+    ## 23          0
+    ## 24          0
+    ## 25          0
+    ## 26          0
+    ## 27          0
+    ## 28          0
+    ## 29          0
+    ## 30          0
+    ## 31          0
+    ## 32          0
+    ## 33          0
+    ## 34          0
+    ## 35          0
+    ## 36          0
+    ## 37          0
+    ## 38          0
+    ## 39          0
+    ## 40          0
+    ## 41          0
+    ## 42          0
+    ## 43          0
+    ## 44          0
+    ## 45          0
+    ## 46          0
+    ## 47          0
+    ## 48          0
+    ## 49          0
+    ## 50          0
+    ## 51          0
+    ## 52          0
+    ## 53          0
+    ## 54          0
+    ## 55          0
+    ## 56          0
+    ## 57          0
+    ## 58          0
+    ## 59          0
+    ## 60          0
+    ## 61          0
+    ## 62          0
+    ## 63          0
+    ## 64          0
+    ## 65          0
+    ## 66          0
+    ## 67          0
+    ## 68          0
+    ## 69          0
+    ## 70          0
+    ## 71          0
+    ## 72          0
+    ## 73          0
+    ## 74          0
+    ## 75          0
+    ## 76          0
+    ## 77          0
+    ## 78          0
+    ## 79          0
+    ## 80          0
+    ## 81          0
+    ## 82          0
+    ## 83          0
+    ## 84          0
+    ## 85          0
+    ## 86          0
+    ## 87          0
+    ## 88          0
+    ## 89          0
+    ## 90          0
+    ## 91          0
+    ## 92          0
+    ## 93          0
+    ## 94          0
+    ## 95          0
+    ## 96          0
+    ## 97          0
+    ## 98          0
+    ## 99          0
+    ## 100         0
+    ## 
+    ## [[2]]
+    ##                 forward_primer             reverse_primer score coverage
+    ## 1        GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 2        GCTTTGAGGATCCAACACGGC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 3         CGGCGACCCTACAAGCTACC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 4         CGGCGACCCTACAAGCTACC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 5       TCCCAGCAGTAAGCAACAATGG    CCATATCCGACCCTGTGTCTGTT     0      0.2
+    ## 6       TCCCAGCAGTAAGCAACAATGG   AATCTACCATATCCGACCCTGTGT     0      0.2
+    ## 7       TCCCAGCAGTAAGCAACAATGG     CCATATCCGACCCTGTGTCTGT     0      0.2
+    ## 8       TCCCAGCAGTAAGCAACAATGG  TGAAATCTACCATATCCGACCCTGT     0      0.2
+    ## 9       TCCCAGCAGTAAGCAACAATGG    CTACCATATCCGACCCTGTGTCT     0      0.2
+    ## 10      TCCCAGCAGTAAGCAACAATGG TGAAATCTACCATATCCGACCCTGTG     0      0.2
+    ## 11      TCCCAGCAGTAAGCAACAATGG     ACCATATCCGACCCTGTGTCTG     0      0.2
+    ## 12      TCCCAGCAGTAAGCAACAATGG   CGACCCTGTGTCTGTTGCATTTTC     0      0.2
+    ## 13  GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
+    ## 14  GCCCCCCTTTAGAACTTAAAAACACA  CCCCATAAGGATCTGCAGACATTTG     0      0.2
+    ## 15  GCCCCCCTTTAGAACTTAAAAACACA   TGGAATCCCCATAAGGATCTGCAG     0      0.2
+    ## 16      CCAACGACGCAGAGAAACACAA      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 17      CCAACGACGCAGAGAAACACAA       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 18      CCAACGACGCAGAGAAACACAA CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 19      CCAACGACGCAGAGAAACACAA        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 20  GGTGCAGTTACCTGACCCAAATAAAT         GTGGCGGCATGGGAACTT     0      0.2
+    ## 21  GGTGCAGTTACCTGACCCAAATAAAT      CGGCATGGGAACTTTCAGTGT     0      0.2
+    ## 22  GGTGCAGTTACCTGACCCAAATAAAT       GCCCACTAAGGCCAACACCT     0      0.2
+    ## 23  GGTGCAGTTACCTGACCCAAATAAAT          GTGGCGGCATGGGAACT     0      0.2
+    ## 24  GGTGCAGTTACCTGACCCAAATAAAT    GGCATGGGAACTTTCAGTGTCAT     0      0.2
+    ## 25  GGTGCAGTTACCTGACCCAAATAAAT       CACCTAAWGGCTGACCACGG     0      0.2
+    ## 26  GGTGCAGTTACCTGACCCAAATAAAT     CMACACCTAAWGGCTGACCACG     0      0.2
+    ## 27  GGTGCAGTTACCTGACCCAAATAAAT    CCCACTAAGGCCAACACCTAAAG     0      0.2
+    ## 28  GGTGCAGTTACCTGACCCAAATAAAT     CGGCATGGGAACTTTCAGTGTC     0      0.2
+    ## 29  GGTGCAGTTACCTGACCCAAATAAAT   GGCATGGGAACTTTCAGTGTCATC     0      0.2
+    ## 30  GGTGCAGTTACCTGACCCAAATAAAT        CCTAAWGGCTGACCACGGC     0      0.2
+    ## 31  GGTGCAGTTACCTGACCCAAATAAAT    CCAATTTCCACTCCAACACAGGC     0      0.2
+    ## 32  GGTGCAGTTACCTGACCCAAATAAAT          AAWGGCTGACCACGGCC     0      0.2
+    ## 33  GGTGCAGTTACCTGACCCAAATAAAT      GCCMACACCTAAWGGCTGACC     0      0.2
+    ## 34  GGTGCAGTTACCTGACCCAAATAAAT        GCCCACTAAGGCCAACACC     0      0.2
+    ## 35  GGTGCAGTTACCTGACCCAAATAAAT       TGACCACGGCCAATTTCCAC     0      0.2
+    ## 36  GGTGCAGTTACCTGACCCAAATAAAT     CCMACACCTAAWGGCTGACCAC     0      0.2
+    ## 37  GGTGCAGTTACCTGACCCAAATAAAT        TGCCCACTAAGGCCAACAC     0      0.2
+    ## 38  GGTGCAGTTACCTGACCCAAATAAAT      GCCCACTAAGGCCAACACCTA     0      0.2
+    ## 39  GGTGCAGTTACCTGACCCAAATAAAT     GGCATGGGAACTTTCAGTGTCA     0      0.2
+    ## 40  GGTGCAGTTACCTGACCCAAATAAAT       CTGACCACGGCCAATTTCCA     0      0.2
+    ## 41  GGTGCAGTTACCTGACCCAAATAAAT       CACGGCCAATTTCCACTCCA     0      0.2
+    ## 42  GGTGCAGTTACCTGACCCAAATAAAT     GCCMACACCTAAWGGCTGACCA     0      0.2
+    ## 43  GGTGCAGTTACCTGACCCAAATAAAT     GCCCACTAAKGCCMACACCTAA     0      0.2
+    ## 44  GGTGCAGTTACCTGACCCAAATAAAT      CACGGCCAATTTCCACTCCAA     0      0.2
+    ## 45  GGTGCAGTTACCTGACCCAAATAAAT    GCCCACTAAGGCCAACACCTAAA     0      0.2
+    ## 46    GCATGCTGCATGCCATAAATGTAT      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 47      TCCCAGCAGTAAGCAACAATGG ACAATAGCCTGTACATAAAACCAGCC     0      0.2
+    ## 48     CCAACGACGCAGAGAAACACAAG      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 49     CCAACGACGCAGAGAAACACAAG       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 50     CCAACGACGCAGAGAAACACAAG CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 51     CCAACGACGCAGAGAAACACAAG        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 52       GCTTTGAGGATCCAACACGGC     GCAGTGAAGTGTTCAGTTCCGT     0      0.2
+    ## 53       GCTTTGAGGATCCAACACGGC     GTGTTCAGTTCCGTGCACAGAT     0      0.2
+    ## 54       GCTTTGAGGATCCAACACGGC    GCAGTGAAGTGTTCAGTTCCGTG     0      0.2
+    ## 55       GCTTTGAGGATCCAACACGGC      AGTGTTCAGTTCCGTGCACAG     0      0.2
+    ## 56       GCTTTGAGGATCCAACACGGC     AGTGAAGTGTTCAGTTCCGTGC     0      0.2
+    ## 57       GCTTTGAGGATCCAACACGGC      GTGTTCAGTTCCGTGCACAGA     0      0.2
+    ## 58       GCTTTGAGGATCCAACACGGC     GTGAAGTGTTCAGTTCCGTGCA     0      0.2
+    ## 59       GCTTTGAGGATCCAACACGGC     GAAGTGTTCAGTTCCGTGCACA     0      0.2
+    ## 60      TGTGCACGGAACTGAACACTTC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 61      TGTGCACGGAACTGAACACTTC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 62           TCGTGCTGCAACCGAGC   ATGTCTTGCAATGTTGCCTTAGGT     0      0.2
+    ## 63           TCGTGCTGCAACCGAGC  GTTGCCTTAGGTCCATGCATACTTA     0      0.2
+    ## 64           TCGTGCTGCAACCGAGC GTTGCCTTAGGTCCATGCATACTTAA     0      0.2
+    ## 65       CAGGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 66         GGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 67          CCCCCCCGCCAACTACTA     GTGCAGCATCCTTTTGACAGGT     0      0.2
+    ## 68          CCCCCCCGCCAACTACTA   CCTTATTTTCAGCYGGTGCAGCAT     0      0.2
+    ## 69          CCCCCCCGCCAACTACTA         TTTCAGCYGGTGCAGCAT     0      0.2
+    ## 70          CCCCCCCGCCAACTACTA  GTGCAGCATCCTTTTGACAGGTAAT     0      0.2
+    ## 71          CCCCCCCGCCAACTACTA  CCTTATTTTCAGCYGGTGCAGCATC     0      0.2
+    ## 72          CCCCCCCGCCAACTACTA    TCCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 73          CCCCCCCGCCAACTACTA     CCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 74          CCCCCCCGCCAACTACTA    GTGCAGCATCCTTTTGACAGGTA     0      0.2
+    ## 75          CCCCCCCGCCAACTACTA GTGCAGCATCCTTTTGACAGGTAATA     0      0.2
+    ## 76          CCCCCCCGCCAACTACTA CAGCATCCTTTTGACAGGTAATAGCA     0      0.2
+    ## 77          CCCCCCCGCCAACTACTA    CCTTATTTTCAGCYGGTGCAGCA     0      0.2
+    ## 78          CCCCCCCGCCAACTACTA          TTTCAGCYGGTGCAGCA     0      0.2
+    ## 79          CCCCCCCGCCAACTACTA   GTGCAGCATCCTTTTGACAGGTAA     0      0.2
+    ## 80      TGATCTGTGCACGGAACTGAAC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 81      TGATCTGTGCACGGAACTGAAC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 82   ACCTAAGGCAACATTGCAAGACATT CATACACAACATTGTGTGACGTTGTG     0      0.2
+    ## 83   ACCTAAGGCAACATTGCAAGACATT       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 84   ACCTAAGGCAACATTGCAAGACATT CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 85   ACCTAAGGCAACATTGCAAGACATT        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 86    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGGAACACCAAAGTT     0      0.2
+    ## 87    TCTCCTGTACCTGGGCAATATGAT        GGGGGGGGAACACCAAAGT     0      0.2
+    ## 88    TCTCCTGTACCTGGGCAATATGAT          AGTAGTTGGCGGGGGGG     0      0.2
+    ## 89    TCTCCTGTACCTGGGCAATATGAT      CAAACTAGTAGTTGGCGGGGG     0      0.2
+    ## 90    TCTCCTGTACCTGGGCAATATGAT      CCAAACTAGTAGTTGGCGGGG     0      0.2
+    ## 91    TCTCCTGTACCTGGGCAATATGAT         GGGGGGGGAACACCAAAG     0      0.2
+    ## 92    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGAACACCAAAGTTC     0      0.2
+    ## 93    TCTCCTGTACCTGGGCAATATGAT          CGGGGGGGGAACACCAA     0      0.2
+    ## 94    TCTCCTGTACCTGGGCAATATGAT         CGGGGGGGGAACACCAAA     0      0.2
+    ## 95   GCATGCTGCATGCCATAAATGTATA      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 96       TGCCGCCACGTCTAATGTTTC GCACAGCCCAAAATACATAACTGTGT     0      0.2
+    ## 97       TGCCGCCACGTCTAATGTTTC  GGCACAGCCCAAAATACATAACTGT     0      0.2
+    ## 98       TGCCGCCACGTCTAATGTTTC GCCCAAAATACATAACTGTGTCTGCT     0      0.2
+    ## 99       TGCCGCCACGTCTAATGTTTC   GGGCACAGCCCAAAATACATAACT     0      0.2
+    ## 100      TGCCGCCACGTCTAATGTTTC GGCACAGCCCAAAATACATAACTGTG     0      0.2
+    ##     products similar_signatures        missing_signatures enzyme digest_score
+    ## 1          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 2          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 3          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 4          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 5          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 6          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 7          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 8          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 9          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 10         0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 11         0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 12         0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 13         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 14         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 15         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 16         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 17         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 18         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 19         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 20         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 21         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 22         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 23         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 24         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 25         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 26         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 27         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 28         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 29         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 30         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 31         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 32         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 33         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 34         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 35         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 36         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 37         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 38         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 39         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 40         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 41         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 42         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 43         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 44         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 45         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 46         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 47         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 48         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 49         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 50         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 51         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 52         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 53         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 54         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 55         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 56         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 57         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 58         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 59         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 60         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 61         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 62         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 63         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 64         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 65         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 66         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 67         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 68         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 69         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 70         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 71         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 72         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 73         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 74         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 75         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 76         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 77         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 78         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 79         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 80         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 81         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 82         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 83         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 84         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 85         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 86         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 87         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 88         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 89         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 90         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 91         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 92         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 93         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 94         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 95         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 96         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 97         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 98         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 99         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 100        0                    HPV16, HPV11, HPV4, HPV17                   0
+    ##     fragments
+    ## 1           4
+    ## 2           4
+    ## 3           4
+    ## 4           4
+    ## 5           2
+    ## 6           2
+    ## 7           2
+    ## 8           2
+    ## 9           2
+    ## 10          2
+    ## 11          2
+    ## 12          2
+    ## 13          0
+    ## 14          0
+    ## 15          0
+    ## 16          0
+    ## 17          0
+    ## 18          0
+    ## 19          0
+    ## 20          0
+    ## 21          0
+    ## 22          0
+    ## 23          0
+    ## 24          0
+    ## 25          0
+    ## 26          0
+    ## 27          0
+    ## 28          0
+    ## 29          0
+    ## 30          0
+    ## 31          0
+    ## 32          0
+    ## 33          0
+    ## 34          0
+    ## 35          0
+    ## 36          0
+    ## 37          0
+    ## 38          0
+    ## 39          0
+    ## 40          0
+    ## 41          0
+    ## 42          0
+    ## 43          0
+    ## 44          0
+    ## 45          0
+    ## 46          0
+    ## 47          0
+    ## 48          0
+    ## 49          0
+    ## 50          0
+    ## 51          0
+    ## 52          0
+    ## 53          0
+    ## 54          0
+    ## 55          0
+    ## 56          0
+    ## 57          0
+    ## 58          0
+    ## 59          0
+    ## 60          0
+    ## 61          0
+    ## 62          0
+    ## 63          0
+    ## 64          0
+    ## 65          0
+    ## 66          0
+    ## 67          0
+    ## 68          0
+    ## 69          0
+    ## 70          0
+    ## 71          0
+    ## 72          0
+    ## 73          0
+    ## 74          0
+    ## 75          0
+    ## 76          0
+    ## 77          0
+    ## 78          0
+    ## 79          0
+    ## 80          0
+    ## 81          0
+    ## 82          0
+    ## 83          0
+    ## 84          0
+    ## 85          0
+    ## 86          0
+    ## 87          0
+    ## 88          0
+    ## 89          0
+    ## 90          0
+    ## 91          0
+    ## 92          0
+    ## 93          0
+    ## 94          0
+    ## 95          0
+    ## 96          0
+    ## 97          0
+    ## 98          0
+    ## 99          0
+    ## 100         0
+    ## 
+    ## [[3]]
+    ##                 forward_primer             reverse_primer score coverage
+    ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
+    ## 2   GCCCCCCTTTAGAACTTAAAAACACA  CCCCATAAGGATCTGCAGACATTTG     0      0.2
+    ## 3   GCCCCCCTTTAGAACTTAAAAACACA   TGGAATCCCCATAAGGATCTGCAG     0      0.2
+    ## 4       CCAACGACGCAGAGAAACACAA      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 5       CCAACGACGCAGAGAAACACAA       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 6       CCAACGACGCAGAGAAACACAA CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 7       CCAACGACGCAGAGAAACACAA        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 8   GGTGCAGTTACCTGACCCAAATAAAT         GTGGCGGCATGGGAACTT     0      0.2
+    ## 9   GGTGCAGTTACCTGACCCAAATAAAT      CGGCATGGGAACTTTCAGTGT     0      0.2
+    ## 10  GGTGCAGTTACCTGACCCAAATAAAT       GCCCACTAAGGCCAACACCT     0      0.2
+    ## 11  GGTGCAGTTACCTGACCCAAATAAAT          GTGGCGGCATGGGAACT     0      0.2
+    ## 12  GGTGCAGTTACCTGACCCAAATAAAT    GGCATGGGAACTTTCAGTGTCAT     0      0.2
+    ## 13  GGTGCAGTTACCTGACCCAAATAAAT       CACCTAAWGGCTGACCACGG     0      0.2
+    ## 14  GGTGCAGTTACCTGACCCAAATAAAT     CMACACCTAAWGGCTGACCACG     0      0.2
+    ## 15  GGTGCAGTTACCTGACCCAAATAAAT    CCCACTAAGGCCAACACCTAAAG     0      0.2
+    ## 16  GGTGCAGTTACCTGACCCAAATAAAT     CGGCATGGGAACTTTCAGTGTC     0      0.2
+    ## 17  GGTGCAGTTACCTGACCCAAATAAAT   GGCATGGGAACTTTCAGTGTCATC     0      0.2
+    ## 18  GGTGCAGTTACCTGACCCAAATAAAT        CCTAAWGGCTGACCACGGC     0      0.2
+    ## 19  GGTGCAGTTACCTGACCCAAATAAAT    CCAATTTCCACTCCAACACAGGC     0      0.2
+    ## 20  GGTGCAGTTACCTGACCCAAATAAAT          AAWGGCTGACCACGGCC     0      0.2
+    ## 21  GGTGCAGTTACCTGACCCAAATAAAT      GCCMACACCTAAWGGCTGACC     0      0.2
+    ## 22  GGTGCAGTTACCTGACCCAAATAAAT        GCCCACTAAGGCCAACACC     0      0.2
+    ## 23  GGTGCAGTTACCTGACCCAAATAAAT       TGACCACGGCCAATTTCCAC     0      0.2
+    ## 24  GGTGCAGTTACCTGACCCAAATAAAT     CCMACACCTAAWGGCTGACCAC     0      0.2
+    ## 25  GGTGCAGTTACCTGACCCAAATAAAT        TGCCCACTAAGGCCAACAC     0      0.2
+    ## 26  GGTGCAGTTACCTGACCCAAATAAAT      GCCCACTAAGGCCAACACCTA     0      0.2
+    ## 27  GGTGCAGTTACCTGACCCAAATAAAT     GGCATGGGAACTTTCAGTGTCA     0      0.2
+    ## 28  GGTGCAGTTACCTGACCCAAATAAAT       CTGACCACGGCCAATTTCCA     0      0.2
+    ## 29  GGTGCAGTTACCTGACCCAAATAAAT       CACGGCCAATTTCCACTCCA     0      0.2
+    ## 30  GGTGCAGTTACCTGACCCAAATAAAT     GCCMACACCTAAWGGCTGACCA     0      0.2
+    ## 31  GGTGCAGTTACCTGACCCAAATAAAT     GCCCACTAAKGCCMACACCTAA     0      0.2
+    ## 32  GGTGCAGTTACCTGACCCAAATAAAT      CACGGCCAATTTCCACTCCAA     0      0.2
+    ## 33  GGTGCAGTTACCTGACCCAAATAAAT    GCCCACTAAGGCCAACACCTAAA     0      0.2
+    ## 34    GCATGCTGCATGCCATAAATGTAT      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 35      TCCCAGCAGTAAGCAACAATGG    CCATATCCGACCCTGTGTCTGTT     0      0.2
+    ## 36      TCCCAGCAGTAAGCAACAATGG   AATCTACCATATCCGACCCTGTGT     0      0.2
+    ## 37      TCCCAGCAGTAAGCAACAATGG     CCATATCCGACCCTGTGTCTGT     0      0.2
+    ## 38      TCCCAGCAGTAAGCAACAATGG  TGAAATCTACCATATCCGACCCTGT     0      0.2
+    ## 39      TCCCAGCAGTAAGCAACAATGG    CTACCATATCCGACCCTGTGTCT     0      0.2
+    ## 40      TCCCAGCAGTAAGCAACAATGG TGAAATCTACCATATCCGACCCTGTG     0      0.2
+    ## 41      TCCCAGCAGTAAGCAACAATGG     ACCATATCCGACCCTGTGTCTG     0      0.2
+    ## 42      TCCCAGCAGTAAGCAACAATGG   CGACCCTGTGTCTGTTGCATTTTC     0      0.2
+    ## 43      TCCCAGCAGTAAGCAACAATGG ACAATAGCCTGTACATAAAACCAGCC     0      0.2
+    ## 44     CCAACGACGCAGAGAAACACAAG      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 45     CCAACGACGCAGAGAAACACAAG       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 46     CCAACGACGCAGAGAAACACAAG CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 47     CCAACGACGCAGAGAAACACAAG        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 48       GCTTTGAGGATCCAACACGGC     GCAGTGAAGTGTTCAGTTCCGT     0      0.2
+    ## 49       GCTTTGAGGATCCAACACGGC     GTGTTCAGTTCCGTGCACAGAT     0      0.2
+    ## 50       GCTTTGAGGATCCAACACGGC    GCAGTGAAGTGTTCAGTTCCGTG     0      0.2
+    ## 51       GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 52       GCTTTGAGGATCCAACACGGC      AGTGTTCAGTTCCGTGCACAG     0      0.2
+    ## 53       GCTTTGAGGATCCAACACGGC     AGTGAAGTGTTCAGTTCCGTGC     0      0.2
+    ## 54       GCTTTGAGGATCCAACACGGC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 55       GCTTTGAGGATCCAACACGGC      GTGTTCAGTTCCGTGCACAGA     0      0.2
+    ## 56       GCTTTGAGGATCCAACACGGC     GTGAAGTGTTCAGTTCCGTGCA     0      0.2
+    ## 57       GCTTTGAGGATCCAACACGGC     GAAGTGTTCAGTTCCGTGCACA     0      0.2
+    ## 58      TGTGCACGGAACTGAACACTTC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 59      TGTGCACGGAACTGAACACTTC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 60           TCGTGCTGCAACCGAGC   ATGTCTTGCAATGTTGCCTTAGGT     0      0.2
+    ## 61           TCGTGCTGCAACCGAGC  GTTGCCTTAGGTCCATGCATACTTA     0      0.2
+    ## 62           TCGTGCTGCAACCGAGC GTTGCCTTAGGTCCATGCATACTTAA     0      0.2
+    ## 63       CAGGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 64         GGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 65          CCCCCCCGCCAACTACTA     GTGCAGCATCCTTTTGACAGGT     0      0.2
+    ## 66          CCCCCCCGCCAACTACTA   CCTTATTTTCAGCYGGTGCAGCAT     0      0.2
+    ## 67          CCCCCCCGCCAACTACTA         TTTCAGCYGGTGCAGCAT     0      0.2
+    ## 68          CCCCCCCGCCAACTACTA  GTGCAGCATCCTTTTGACAGGTAAT     0      0.2
+    ## 69          CCCCCCCGCCAACTACTA  CCTTATTTTCAGCYGGTGCAGCATC     0      0.2
+    ## 70          CCCCCCCGCCAACTACTA    TCCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 71          CCCCCCCGCCAACTACTA     CCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 72          CCCCCCCGCCAACTACTA    GTGCAGCATCCTTTTGACAGGTA     0      0.2
+    ## 73          CCCCCCCGCCAACTACTA GTGCAGCATCCTTTTGACAGGTAATA     0      0.2
+    ## 74          CCCCCCCGCCAACTACTA CAGCATCCTTTTGACAGGTAATAGCA     0      0.2
+    ## 75          CCCCCCCGCCAACTACTA    CCTTATTTTCAGCYGGTGCAGCA     0      0.2
+    ## 76          CCCCCCCGCCAACTACTA          TTTCAGCYGGTGCAGCA     0      0.2
+    ## 77          CCCCCCCGCCAACTACTA   GTGCAGCATCCTTTTGACAGGTAA     0      0.2
+    ## 78      TGATCTGTGCACGGAACTGAAC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 79      TGATCTGTGCACGGAACTGAAC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 80   ACCTAAGGCAACATTGCAAGACATT CATACACAACATTGTGTGACGTTGTG     0      0.2
+    ## 81   ACCTAAGGCAACATTGCAAGACATT       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 82   ACCTAAGGCAACATTGCAAGACATT CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 83   ACCTAAGGCAACATTGCAAGACATT        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 84        CGGCGACCCTACAAGCTACC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 85        CGGCGACCCTACAAGCTACC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 86    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGGAACACCAAAGTT     0      0.2
+    ## 87    TCTCCTGTACCTGGGCAATATGAT        GGGGGGGGAACACCAAAGT     0      0.2
+    ## 88    TCTCCTGTACCTGGGCAATATGAT          AGTAGTTGGCGGGGGGG     0      0.2
+    ## 89    TCTCCTGTACCTGGGCAATATGAT      CAAACTAGTAGTTGGCGGGGG     0      0.2
+    ## 90    TCTCCTGTACCTGGGCAATATGAT      CCAAACTAGTAGTTGGCGGGG     0      0.2
+    ## 91    TCTCCTGTACCTGGGCAATATGAT         GGGGGGGGAACACCAAAG     0      0.2
+    ## 92    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGAACACCAAAGTTC     0      0.2
+    ## 93    TCTCCTGTACCTGGGCAATATGAT          CGGGGGGGGAACACCAA     0      0.2
+    ## 94    TCTCCTGTACCTGGGCAATATGAT         CGGGGGGGGAACACCAAA     0      0.2
+    ## 95   GCATGCTGCATGCCATAAATGTATA      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 96       TGCCGCCACGTCTAATGTTTC GCACAGCCCAAAATACATAACTGTGT     0      0.2
+    ## 97       TGCCGCCACGTCTAATGTTTC  GGCACAGCCCAAAATACATAACTGT     0      0.2
+    ## 98       TGCCGCCACGTCTAATGTTTC GCCCAAAATACATAACTGTGTCTGCT     0      0.2
+    ## 99       TGCCGCCACGTCTAATGTTTC   GGGCACAGCCCAAAATACATAACT     0      0.2
+    ## 100      TGCCGCCACGTCTAATGTTTC GGCACAGCCCAAAATACATAACTGTG     0      0.2
+    ##     products similar_signatures        missing_signatures enzyme digest_score
+    ## 1          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 2          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 3          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 4          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 5          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 6          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 7          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 8          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 9          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 10         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 11         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 12         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 13         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 14         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 15         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 16         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 17         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 18         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 19         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 20         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 21         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 22         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 23         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 24         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 25         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 26         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 27         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 28         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 29         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 30         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 31         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 32         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 33         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 34         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 35         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 36         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 37         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 38         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 39         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 40         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 41         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 42         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 43         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 44         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 45         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 46         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 47         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 48         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 49         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 50         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 51         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 52         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 53         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 54         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 55         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 56         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 57         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 58         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 59         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 60         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 61         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 62         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 63         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 64         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 65         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 66         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 67         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 68         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 69         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 70         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 71         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 72         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 73         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 74         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 75         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 76         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 77         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 78         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 79         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 80         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 81         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 82         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 83         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 84         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 85         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 86         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 87         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 88         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 89         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 90         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 91         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 92         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 93         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 94         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 95         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 96         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 97         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 98         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 99         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 100        0                    HPV16, HPV11, HPV4, HPV17                   0
+    ##     fragments
+    ## 1           0
+    ## 2           0
+    ## 3           0
+    ## 4           0
+    ## 5           0
+    ## 6           0
+    ## 7           0
+    ## 8           0
+    ## 9           0
+    ## 10          0
+    ## 11          0
+    ## 12          0
+    ## 13          0
+    ## 14          0
+    ## 15          0
+    ## 16          0
+    ## 17          0
+    ## 18          0
+    ## 19          0
+    ## 20          0
+    ## 21          0
+    ## 22          0
+    ## 23          0
+    ## 24          0
+    ## 25          0
+    ## 26          0
+    ## 27          0
+    ## 28          0
+    ## 29          0
+    ## 30          0
+    ## 31          0
+    ## 32          0
+    ## 33          0
+    ## 34          0
+    ## 35          0
+    ## 36          0
+    ## 37          0
+    ## 38          0
+    ## 39          0
+    ## 40          0
+    ## 41          0
+    ## 42          0
+    ## 43          0
+    ## 44          0
+    ## 45          0
+    ## 46          0
+    ## 47          0
+    ## 48          0
+    ## 49          0
+    ## 50          0
+    ## 51          0
+    ## 52          0
+    ## 53          0
+    ## 54          0
+    ## 55          0
+    ## 56          0
+    ## 57          0
+    ## 58          0
+    ## 59          0
+    ## 60          0
+    ## 61          0
+    ## 62          0
+    ## 63          0
+    ## 64          0
+    ## 65          0
+    ## 66          0
+    ## 67          0
+    ## 68          0
+    ## 69          0
+    ## 70          0
+    ## 71          0
+    ## 72          0
+    ## 73          0
+    ## 74          0
+    ## 75          0
+    ## 76          0
+    ## 77          0
+    ## 78          0
+    ## 79          0
+    ## 80          0
+    ## 81          0
+    ## 82          0
+    ## 83          0
+    ## 84          0
+    ## 85          0
+    ## 86          0
+    ## 87          0
+    ## 88          0
+    ## 89          0
+    ## 90          0
+    ## 91          0
+    ## 92          0
+    ## 93          0
+    ## 94          0
+    ## 95          0
+    ## 96          0
+    ## 97          0
+    ## 98          0
+    ## 99          0
+    ## 100         0
+    ## 
+    ## [[4]]
+    ##                 forward_primer             reverse_primer score coverage
+    ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
+    ## 2   GCCCCCCTTTAGAACTTAAAAACACA  CCCCATAAGGATCTGCAGACATTTG     0      0.2
+    ## 3   GCCCCCCTTTAGAACTTAAAAACACA   TGGAATCCCCATAAGGATCTGCAG     0      0.2
+    ## 4       CCAACGACGCAGAGAAACACAA      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 5       CCAACGACGCAGAGAAACACAA       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 6       CCAACGACGCAGAGAAACACAA CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 7       CCAACGACGCAGAGAAACACAA        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 8   GGTGCAGTTACCTGACCCAAATAAAT         GTGGCGGCATGGGAACTT     0      0.2
+    ## 9   GGTGCAGTTACCTGACCCAAATAAAT      CGGCATGGGAACTTTCAGTGT     0      0.2
+    ## 10  GGTGCAGTTACCTGACCCAAATAAAT       GCCCACTAAGGCCAACACCT     0      0.2
+    ## 11  GGTGCAGTTACCTGACCCAAATAAAT          GTGGCGGCATGGGAACT     0      0.2
+    ## 12  GGTGCAGTTACCTGACCCAAATAAAT    GGCATGGGAACTTTCAGTGTCAT     0      0.2
+    ## 13  GGTGCAGTTACCTGACCCAAATAAAT       CACCTAAWGGCTGACCACGG     0      0.2
+    ## 14  GGTGCAGTTACCTGACCCAAATAAAT     CMACACCTAAWGGCTGACCACG     0      0.2
+    ## 15  GGTGCAGTTACCTGACCCAAATAAAT    CCCACTAAGGCCAACACCTAAAG     0      0.2
+    ## 16  GGTGCAGTTACCTGACCCAAATAAAT     CGGCATGGGAACTTTCAGTGTC     0      0.2
+    ## 17  GGTGCAGTTACCTGACCCAAATAAAT   GGCATGGGAACTTTCAGTGTCATC     0      0.2
+    ## 18  GGTGCAGTTACCTGACCCAAATAAAT        CCTAAWGGCTGACCACGGC     0      0.2
+    ## 19  GGTGCAGTTACCTGACCCAAATAAAT    CCAATTTCCACTCCAACACAGGC     0      0.2
+    ## 20  GGTGCAGTTACCTGACCCAAATAAAT          AAWGGCTGACCACGGCC     0      0.2
+    ## 21  GGTGCAGTTACCTGACCCAAATAAAT      GCCMACACCTAAWGGCTGACC     0      0.2
+    ## 22  GGTGCAGTTACCTGACCCAAATAAAT        GCCCACTAAGGCCAACACC     0      0.2
+    ## 23  GGTGCAGTTACCTGACCCAAATAAAT       TGACCACGGCCAATTTCCAC     0      0.2
+    ## 24  GGTGCAGTTACCTGACCCAAATAAAT     CCMACACCTAAWGGCTGACCAC     0      0.2
+    ## 25  GGTGCAGTTACCTGACCCAAATAAAT        TGCCCACTAAGGCCAACAC     0      0.2
+    ## 26  GGTGCAGTTACCTGACCCAAATAAAT      GCCCACTAAGGCCAACACCTA     0      0.2
+    ## 27  GGTGCAGTTACCTGACCCAAATAAAT     GGCATGGGAACTTTCAGTGTCA     0      0.2
+    ## 28  GGTGCAGTTACCTGACCCAAATAAAT       CTGACCACGGCCAATTTCCA     0      0.2
+    ## 29  GGTGCAGTTACCTGACCCAAATAAAT       CACGGCCAATTTCCACTCCA     0      0.2
+    ## 30  GGTGCAGTTACCTGACCCAAATAAAT     GCCMACACCTAAWGGCTGACCA     0      0.2
+    ## 31  GGTGCAGTTACCTGACCCAAATAAAT     GCCCACTAAKGCCMACACCTAA     0      0.2
+    ## 32  GGTGCAGTTACCTGACCCAAATAAAT      CACGGCCAATTTCCACTCCAA     0      0.2
+    ## 33  GGTGCAGTTACCTGACCCAAATAAAT    GCCCACTAAGGCCAACACCTAAA     0      0.2
+    ## 34    GCATGCTGCATGCCATAAATGTAT      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 35      TCCCAGCAGTAAGCAACAATGG    CCATATCCGACCCTGTGTCTGTT     0      0.2
+    ## 36      TCCCAGCAGTAAGCAACAATGG   AATCTACCATATCCGACCCTGTGT     0      0.2
+    ## 37      TCCCAGCAGTAAGCAACAATGG     CCATATCCGACCCTGTGTCTGT     0      0.2
+    ## 38      TCCCAGCAGTAAGCAACAATGG  TGAAATCTACCATATCCGACCCTGT     0      0.2
+    ## 39      TCCCAGCAGTAAGCAACAATGG    CTACCATATCCGACCCTGTGTCT     0      0.2
+    ## 40      TCCCAGCAGTAAGCAACAATGG TGAAATCTACCATATCCGACCCTGTG     0      0.2
+    ## 41      TCCCAGCAGTAAGCAACAATGG     ACCATATCCGACCCTGTGTCTG     0      0.2
+    ## 42      TCCCAGCAGTAAGCAACAATGG   CGACCCTGTGTCTGTTGCATTTTC     0      0.2
+    ## 43      TCCCAGCAGTAAGCAACAATGG ACAATAGCCTGTACATAAAACCAGCC     0      0.2
+    ## 44     CCAACGACGCAGAGAAACACAAG      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 45     CCAACGACGCAGAGAAACACAAG       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 46     CCAACGACGCAGAGAAACACAAG CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 47     CCAACGACGCAGAGAAACACAAG        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 48       GCTTTGAGGATCCAACACGGC     GCAGTGAAGTGTTCAGTTCCGT     0      0.2
+    ## 49       GCTTTGAGGATCCAACACGGC     GTGTTCAGTTCCGTGCACAGAT     0      0.2
+    ## 50       GCTTTGAGGATCCAACACGGC    GCAGTGAAGTGTTCAGTTCCGTG     0      0.2
+    ## 51       GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 52       GCTTTGAGGATCCAACACGGC      AGTGTTCAGTTCCGTGCACAG     0      0.2
+    ## 53       GCTTTGAGGATCCAACACGGC     AGTGAAGTGTTCAGTTCCGTGC     0      0.2
+    ## 54       GCTTTGAGGATCCAACACGGC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 55       GCTTTGAGGATCCAACACGGC      GTGTTCAGTTCCGTGCACAGA     0      0.2
+    ## 56       GCTTTGAGGATCCAACACGGC     GTGAAGTGTTCAGTTCCGTGCA     0      0.2
+    ## 57       GCTTTGAGGATCCAACACGGC     GAAGTGTTCAGTTCCGTGCACA     0      0.2
+    ## 58      TGTGCACGGAACTGAACACTTC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 59      TGTGCACGGAACTGAACACTTC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 60           TCGTGCTGCAACCGAGC   ATGTCTTGCAATGTTGCCTTAGGT     0      0.2
+    ## 61           TCGTGCTGCAACCGAGC  GTTGCCTTAGGTCCATGCATACTTA     0      0.2
+    ## 62           TCGTGCTGCAACCGAGC GTTGCCTTAGGTCCATGCATACTTAA     0      0.2
+    ## 63       CAGGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 64         GGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 65          CCCCCCCGCCAACTACTA     GTGCAGCATCCTTTTGACAGGT     0      0.2
+    ## 66          CCCCCCCGCCAACTACTA   CCTTATTTTCAGCYGGTGCAGCAT     0      0.2
+    ## 67          CCCCCCCGCCAACTACTA         TTTCAGCYGGTGCAGCAT     0      0.2
+    ## 68          CCCCCCCGCCAACTACTA  GTGCAGCATCCTTTTGACAGGTAAT     0      0.2
+    ## 69          CCCCCCCGCCAACTACTA  CCTTATTTTCAGCYGGTGCAGCATC     0      0.2
+    ## 70          CCCCCCCGCCAACTACTA    TCCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 71          CCCCCCCGCCAACTACTA     CCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 72          CCCCCCCGCCAACTACTA    GTGCAGCATCCTTTTGACAGGTA     0      0.2
+    ## 73          CCCCCCCGCCAACTACTA GTGCAGCATCCTTTTGACAGGTAATA     0      0.2
+    ## 74          CCCCCCCGCCAACTACTA CAGCATCCTTTTGACAGGTAATAGCA     0      0.2
+    ## 75          CCCCCCCGCCAACTACTA    CCTTATTTTCAGCYGGTGCAGCA     0      0.2
+    ## 76          CCCCCCCGCCAACTACTA          TTTCAGCYGGTGCAGCA     0      0.2
+    ## 77          CCCCCCCGCCAACTACTA   GTGCAGCATCCTTTTGACAGGTAA     0      0.2
+    ## 78      TGATCTGTGCACGGAACTGAAC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 79      TGATCTGTGCACGGAACTGAAC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 80   ACCTAAGGCAACATTGCAAGACATT CATACACAACATTGTGTGACGTTGTG     0      0.2
+    ## 81   ACCTAAGGCAACATTGCAAGACATT       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 82   ACCTAAGGCAACATTGCAAGACATT CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 83   ACCTAAGGCAACATTGCAAGACATT        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 84        CGGCGACCCTACAAGCTACC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 85        CGGCGACCCTACAAGCTACC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 86    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGGAACACCAAAGTT     0      0.2
+    ## 87    TCTCCTGTACCTGGGCAATATGAT        GGGGGGGGAACACCAAAGT     0      0.2
+    ## 88    TCTCCTGTACCTGGGCAATATGAT          AGTAGTTGGCGGGGGGG     0      0.2
+    ## 89    TCTCCTGTACCTGGGCAATATGAT      CAAACTAGTAGTTGGCGGGGG     0      0.2
+    ## 90    TCTCCTGTACCTGGGCAATATGAT      CCAAACTAGTAGTTGGCGGGG     0      0.2
+    ## 91    TCTCCTGTACCTGGGCAATATGAT         GGGGGGGGAACACCAAAG     0      0.2
+    ## 92    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGAACACCAAAGTTC     0      0.2
+    ## 93    TCTCCTGTACCTGGGCAATATGAT          CGGGGGGGGAACACCAA     0      0.2
+    ## 94    TCTCCTGTACCTGGGCAATATGAT         CGGGGGGGGAACACCAAA     0      0.2
+    ## 95   GCATGCTGCATGCCATAAATGTATA      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 96       TGCCGCCACGTCTAATGTTTC GCACAGCCCAAAATACATAACTGTGT     0      0.2
+    ## 97       TGCCGCCACGTCTAATGTTTC  GGCACAGCCCAAAATACATAACTGT     0      0.2
+    ## 98       TGCCGCCACGTCTAATGTTTC GCCCAAAATACATAACTGTGTCTGCT     0      0.2
+    ## 99       TGCCGCCACGTCTAATGTTTC   GGGCACAGCCCAAAATACATAACT     0      0.2
+    ## 100      TGCCGCCACGTCTAATGTTTC GGCACAGCCCAAAATACATAACTGTG     0      0.2
+    ##     products similar_signatures        missing_signatures enzyme digest_score
+    ## 1          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 2          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 3          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 4          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 5          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 6          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 7          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 8          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 9          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 10         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 11         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 12         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 13         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 14         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 15         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 16         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 17         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 18         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 19         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 20         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 21         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 22         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 23         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 24         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 25         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 26         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 27         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 28         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 29         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 30         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 31         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 32         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 33         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 34         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 35         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 36         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 37         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 38         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 39         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 40         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 41         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 42         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 43         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 44         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 45         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 46         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 47         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 48         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 49         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 50         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 51         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 52         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 53         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 54         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 55         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 56         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 57         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 58         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 59         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 60         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 61         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 62         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 63         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 64         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 65         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 66         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 67         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 68         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 69         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 70         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 71         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 72         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 73         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 74         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 75         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 76         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 77         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 78         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 79         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 80         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 81         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 82         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 83         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 84         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 85         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 86         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 87         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 88         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 89         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 90         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 91         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 92         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 93         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 94         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 95         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 96         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 97         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 98         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 99         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 100        0                    HPV16, HPV11, HPV4, HPV17                   0
+    ##     fragments
+    ## 1           0
+    ## 2           0
+    ## 3           0
+    ## 4           0
+    ## 5           0
+    ## 6           0
+    ## 7           0
+    ## 8           0
+    ## 9           0
+    ## 10          0
+    ## 11          0
+    ## 12          0
+    ## 13          0
+    ## 14          0
+    ## 15          0
+    ## 16          0
+    ## 17          0
+    ## 18          0
+    ## 19          0
+    ## 20          0
+    ## 21          0
+    ## 22          0
+    ## 23          0
+    ## 24          0
+    ## 25          0
+    ## 26          0
+    ## 27          0
+    ## 28          0
+    ## 29          0
+    ## 30          0
+    ## 31          0
+    ## 32          0
+    ## 33          0
+    ## 34          0
+    ## 35          0
+    ## 36          0
+    ## 37          0
+    ## 38          0
+    ## 39          0
+    ## 40          0
+    ## 41          0
+    ## 42          0
+    ## 43          0
+    ## 44          0
+    ## 45          0
+    ## 46          0
+    ## 47          0
+    ## 48          0
+    ## 49          0
+    ## 50          0
+    ## 51          0
+    ## 52          0
+    ## 53          0
+    ## 54          0
+    ## 55          0
+    ## 56          0
+    ## 57          0
+    ## 58          0
+    ## 59          0
+    ## 60          0
+    ## 61          0
+    ## 62          0
+    ## 63          0
+    ## 64          0
+    ## 65          0
+    ## 66          0
+    ## 67          0
+    ## 68          0
+    ## 69          0
+    ## 70          0
+    ## 71          0
+    ## 72          0
+    ## 73          0
+    ## 74          0
+    ## 75          0
+    ## 76          0
+    ## 77          0
+    ## 78          0
+    ## 79          0
+    ## 80          0
+    ## 81          0
+    ## 82          0
+    ## 83          0
+    ## 84          0
+    ## 85          0
+    ## 86          0
+    ## 87          0
+    ## 88          0
+    ## 89          0
+    ## 90          0
+    ## 91          0
+    ## 92          0
+    ## 93          0
+    ## 94          0
+    ## 95          0
+    ## 96          0
+    ## 97          0
+    ## 98          0
+    ## 99          0
+    ## 100         0
+    ## 
+    ## [[5]]
+    ##                 forward_primer             reverse_primer score coverage
+    ## 1        GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 2        GCTTTGAGGATCCAACACGGC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 3         CGGCGACCCTACAAGCTACC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 4         CGGCGACCCTACAAGCTACC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 5       TCCCAGCAGTAAGCAACAATGG    CCATATCCGACCCTGTGTCTGTT     0      0.2
+    ## 6       TCCCAGCAGTAAGCAACAATGG   AATCTACCATATCCGACCCTGTGT     0      0.2
+    ## 7       TCCCAGCAGTAAGCAACAATGG     CCATATCCGACCCTGTGTCTGT     0      0.2
+    ## 8       TCCCAGCAGTAAGCAACAATGG  TGAAATCTACCATATCCGACCCTGT     0      0.2
+    ## 9       TCCCAGCAGTAAGCAACAATGG    CTACCATATCCGACCCTGTGTCT     0      0.2
+    ## 10      TCCCAGCAGTAAGCAACAATGG TGAAATCTACCATATCCGACCCTGTG     0      0.2
+    ## 11      TCCCAGCAGTAAGCAACAATGG     ACCATATCCGACCCTGTGTCTG     0      0.2
+    ## 12      TCCCAGCAGTAAGCAACAATGG   CGACCCTGTGTCTGTTGCATTTTC     0      0.2
+    ## 13  GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
+    ## 14  GCCCCCCTTTAGAACTTAAAAACACA  CCCCATAAGGATCTGCAGACATTTG     0      0.2
+    ## 15  GCCCCCCTTTAGAACTTAAAAACACA   TGGAATCCCCATAAGGATCTGCAG     0      0.2
+    ## 16      CCAACGACGCAGAGAAACACAA      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 17      CCAACGACGCAGAGAAACACAA       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 18      CCAACGACGCAGAGAAACACAA CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 19      CCAACGACGCAGAGAAACACAA        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 20  GGTGCAGTTACCTGACCCAAATAAAT         GTGGCGGCATGGGAACTT     0      0.2
+    ## 21  GGTGCAGTTACCTGACCCAAATAAAT      CGGCATGGGAACTTTCAGTGT     0      0.2
+    ## 22  GGTGCAGTTACCTGACCCAAATAAAT       GCCCACTAAGGCCAACACCT     0      0.2
+    ## 23  GGTGCAGTTACCTGACCCAAATAAAT          GTGGCGGCATGGGAACT     0      0.2
+    ## 24  GGTGCAGTTACCTGACCCAAATAAAT    GGCATGGGAACTTTCAGTGTCAT     0      0.2
+    ## 25  GGTGCAGTTACCTGACCCAAATAAAT       CACCTAAWGGCTGACCACGG     0      0.2
+    ## 26  GGTGCAGTTACCTGACCCAAATAAAT     CMACACCTAAWGGCTGACCACG     0      0.2
+    ## 27  GGTGCAGTTACCTGACCCAAATAAAT    CCCACTAAGGCCAACACCTAAAG     0      0.2
+    ## 28  GGTGCAGTTACCTGACCCAAATAAAT     CGGCATGGGAACTTTCAGTGTC     0      0.2
+    ## 29  GGTGCAGTTACCTGACCCAAATAAAT   GGCATGGGAACTTTCAGTGTCATC     0      0.2
+    ## 30  GGTGCAGTTACCTGACCCAAATAAAT        CCTAAWGGCTGACCACGGC     0      0.2
+    ## 31  GGTGCAGTTACCTGACCCAAATAAAT    CCAATTTCCACTCCAACACAGGC     0      0.2
+    ## 32  GGTGCAGTTACCTGACCCAAATAAAT          AAWGGCTGACCACGGCC     0      0.2
+    ## 33  GGTGCAGTTACCTGACCCAAATAAAT      GCCMACACCTAAWGGCTGACC     0      0.2
+    ## 34  GGTGCAGTTACCTGACCCAAATAAAT        GCCCACTAAGGCCAACACC     0      0.2
+    ## 35  GGTGCAGTTACCTGACCCAAATAAAT       TGACCACGGCCAATTTCCAC     0      0.2
+    ## 36  GGTGCAGTTACCTGACCCAAATAAAT     CCMACACCTAAWGGCTGACCAC     0      0.2
+    ## 37  GGTGCAGTTACCTGACCCAAATAAAT        TGCCCACTAAGGCCAACAC     0      0.2
+    ## 38  GGTGCAGTTACCTGACCCAAATAAAT      GCCCACTAAGGCCAACACCTA     0      0.2
+    ## 39  GGTGCAGTTACCTGACCCAAATAAAT     GGCATGGGAACTTTCAGTGTCA     0      0.2
+    ## 40  GGTGCAGTTACCTGACCCAAATAAAT       CTGACCACGGCCAATTTCCA     0      0.2
+    ## 41  GGTGCAGTTACCTGACCCAAATAAAT       CACGGCCAATTTCCACTCCA     0      0.2
+    ## 42  GGTGCAGTTACCTGACCCAAATAAAT     GCCMACACCTAAWGGCTGACCA     0      0.2
+    ## 43  GGTGCAGTTACCTGACCCAAATAAAT     GCCCACTAAKGCCMACACCTAA     0      0.2
+    ## 44  GGTGCAGTTACCTGACCCAAATAAAT      CACGGCCAATTTCCACTCCAA     0      0.2
+    ## 45  GGTGCAGTTACCTGACCCAAATAAAT    GCCCACTAAGGCCAACACCTAAA     0      0.2
+    ## 46    GCATGCTGCATGCCATAAATGTAT      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 47      TCCCAGCAGTAAGCAACAATGG ACAATAGCCTGTACATAAAACCAGCC     0      0.2
+    ## 48     CCAACGACGCAGAGAAACACAAG      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 49     CCAACGACGCAGAGAAACACAAG       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 50     CCAACGACGCAGAGAAACACAAG CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 51     CCAACGACGCAGAGAAACACAAG        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 52       GCTTTGAGGATCCAACACGGC     GCAGTGAAGTGTTCAGTTCCGT     0      0.2
+    ## 53       GCTTTGAGGATCCAACACGGC     GTGTTCAGTTCCGTGCACAGAT     0      0.2
+    ## 54       GCTTTGAGGATCCAACACGGC    GCAGTGAAGTGTTCAGTTCCGTG     0      0.2
+    ## 55       GCTTTGAGGATCCAACACGGC      AGTGTTCAGTTCCGTGCACAG     0      0.2
+    ## 56       GCTTTGAGGATCCAACACGGC     AGTGAAGTGTTCAGTTCCGTGC     0      0.2
+    ## 57       GCTTTGAGGATCCAACACGGC      GTGTTCAGTTCCGTGCACAGA     0      0.2
+    ## 58       GCTTTGAGGATCCAACACGGC     GTGAAGTGTTCAGTTCCGTGCA     0      0.2
+    ## 59       GCTTTGAGGATCCAACACGGC     GAAGTGTTCAGTTCCGTGCACA     0      0.2
+    ## 60      TGTGCACGGAACTGAACACTTC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 61      TGTGCACGGAACTGAACACTTC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 62           TCGTGCTGCAACCGAGC   ATGTCTTGCAATGTTGCCTTAGGT     0      0.2
+    ## 63           TCGTGCTGCAACCGAGC  GTTGCCTTAGGTCCATGCATACTTA     0      0.2
+    ## 64           TCGTGCTGCAACCGAGC GTTGCCTTAGGTCCATGCATACTTAA     0      0.2
+    ## 65       CAGGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 66         GGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 67          CCCCCCCGCCAACTACTA     GTGCAGCATCCTTTTGACAGGT     0      0.2
+    ## 68          CCCCCCCGCCAACTACTA   CCTTATTTTCAGCYGGTGCAGCAT     0      0.2
+    ## 69          CCCCCCCGCCAACTACTA         TTTCAGCYGGTGCAGCAT     0      0.2
+    ## 70          CCCCCCCGCCAACTACTA  GTGCAGCATCCTTTTGACAGGTAAT     0      0.2
+    ## 71          CCCCCCCGCCAACTACTA  CCTTATTTTCAGCYGGTGCAGCATC     0      0.2
+    ## 72          CCCCCCCGCCAACTACTA    TCCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 73          CCCCCCCGCCAACTACTA     CCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 74          CCCCCCCGCCAACTACTA    GTGCAGCATCCTTTTGACAGGTA     0      0.2
+    ## 75          CCCCCCCGCCAACTACTA GTGCAGCATCCTTTTGACAGGTAATA     0      0.2
+    ## 76          CCCCCCCGCCAACTACTA CAGCATCCTTTTGACAGGTAATAGCA     0      0.2
+    ## 77          CCCCCCCGCCAACTACTA    CCTTATTTTCAGCYGGTGCAGCA     0      0.2
+    ## 78          CCCCCCCGCCAACTACTA          TTTCAGCYGGTGCAGCA     0      0.2
+    ## 79          CCCCCCCGCCAACTACTA   GTGCAGCATCCTTTTGACAGGTAA     0      0.2
+    ## 80      TGATCTGTGCACGGAACTGAAC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 81      TGATCTGTGCACGGAACTGAAC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 82   ACCTAAGGCAACATTGCAAGACATT CATACACAACATTGTGTGACGTTGTG     0      0.2
+    ## 83   ACCTAAGGCAACATTGCAAGACATT       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 84   ACCTAAGGCAACATTGCAAGACATT CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 85   ACCTAAGGCAACATTGCAAGACATT        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 86    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGGAACACCAAAGTT     0      0.2
+    ## 87    TCTCCTGTACCTGGGCAATATGAT        GGGGGGGGAACACCAAAGT     0      0.2
+    ## 88    TCTCCTGTACCTGGGCAATATGAT          AGTAGTTGGCGGGGGGG     0      0.2
+    ## 89    TCTCCTGTACCTGGGCAATATGAT      CAAACTAGTAGTTGGCGGGGG     0      0.2
+    ## 90    TCTCCTGTACCTGGGCAATATGAT      CCAAACTAGTAGTTGGCGGGG     0      0.2
+    ## 91    TCTCCTGTACCTGGGCAATATGAT         GGGGGGGGAACACCAAAG     0      0.2
+    ## 92    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGAACACCAAAGTTC     0      0.2
+    ## 93    TCTCCTGTACCTGGGCAATATGAT          CGGGGGGGGAACACCAA     0      0.2
+    ## 94    TCTCCTGTACCTGGGCAATATGAT         CGGGGGGGGAACACCAAA     0      0.2
+    ## 95   GCATGCTGCATGCCATAAATGTATA      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 96       TGCCGCCACGTCTAATGTTTC GCACAGCCCAAAATACATAACTGTGT     0      0.2
+    ## 97       TGCCGCCACGTCTAATGTTTC  GGCACAGCCCAAAATACATAACTGT     0      0.2
+    ## 98       TGCCGCCACGTCTAATGTTTC GCCCAAAATACATAACTGTGTCTGCT     0      0.2
+    ## 99       TGCCGCCACGTCTAATGTTTC   GGGCACAGCCCAAAATACATAACT     0      0.2
+    ## 100      TGCCGCCACGTCTAATGTTTC GGCACAGCCCAAAATACATAACTGTG     0      0.2
+    ##     products similar_signatures        missing_signatures enzyme digest_score
+    ## 1          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 2          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 3          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 4          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 5          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 6          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 7          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 8          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 9          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 10         0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 11         0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 12         0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 13         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 14         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 15         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 16         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 17         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 18         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 19         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 20         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 21         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 22         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 23         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 24         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 25         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 26         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 27         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 28         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 29         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 30         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 31         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 32         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 33         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 34         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 35         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 36         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 37         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 38         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 39         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 40         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 41         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 42         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 43         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 44         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 45         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 46         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 47         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 48         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 49         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 50         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 51         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 52         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 53         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 54         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 55         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 56         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 57         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 58         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 59         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 60         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 61         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 62         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 63         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 64         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 65         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 66         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 67         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 68         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 69         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 70         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 71         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 72         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 73         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 74         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 75         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 76         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 77         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 78         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 79         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 80         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 81         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 82         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 83         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 84         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 85         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 86         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 87         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 88         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 89         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 90         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 91         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 92         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 93         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 94         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 95         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 96         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 97         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 98         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 99         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 100        0                    HPV16, HPV11, HPV4, HPV17                   0
+    ##     fragments
+    ## 1           4
+    ## 2           4
+    ## 3           4
+    ## 4           4
+    ## 5           2
+    ## 6           2
+    ## 7           2
+    ## 8           2
+    ## 9           2
+    ## 10          2
+    ## 11          2
+    ## 12          2
+    ## 13          0
+    ## 14          0
+    ## 15          0
+    ## 16          0
+    ## 17          0
+    ## 18          0
+    ## 19          0
+    ## 20          0
+    ## 21          0
+    ## 22          0
+    ## 23          0
+    ## 24          0
+    ## 25          0
+    ## 26          0
+    ## 27          0
+    ## 28          0
+    ## 29          0
+    ## 30          0
+    ## 31          0
+    ## 32          0
+    ## 33          0
+    ## 34          0
+    ## 35          0
+    ## 36          0
+    ## 37          0
+    ## 38          0
+    ## 39          0
+    ## 40          0
+    ## 41          0
+    ## 42          0
+    ## 43          0
+    ## 44          0
+    ## 45          0
+    ## 46          0
+    ## 47          0
+    ## 48          0
+    ## 49          0
+    ## 50          0
+    ## 51          0
+    ## 52          0
+    ## 53          0
+    ## 54          0
+    ## 55          0
+    ## 56          0
+    ## 57          0
+    ## 58          0
+    ## 59          0
+    ## 60          0
+    ## 61          0
+    ## 62          0
+    ## 63          0
+    ## 64          0
+    ## 65          0
+    ## 66          0
+    ## 67          0
+    ## 68          0
+    ## 69          0
+    ## 70          0
+    ## 71          0
+    ## 72          0
+    ## 73          0
+    ## 74          0
+    ## 75          0
+    ## 76          0
+    ## 77          0
+    ## 78          0
+    ## 79          0
+    ## 80          0
+    ## 81          0
+    ## 82          0
+    ## 83          0
+    ## 84          0
+    ## 85          0
+    ## 86          0
+    ## 87          0
+    ## 88          0
+    ## 89          0
+    ## 90          0
+    ## 91          0
+    ## 92          0
+    ## 93          0
+    ## 94          0
+    ## 95          0
+    ## 96          0
+    ## 97          0
+    ## 98          0
+    ## 99          0
+    ## 100         0
+    ## 
+    ## [[6]]
+    ##                 forward_primer             reverse_primer score coverage
+    ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
+    ## 2   GCCCCCCTTTAGAACTTAAAAACACA  CCCCATAAGGATCTGCAGACATTTG     0      0.2
+    ## 3   GCCCCCCTTTAGAACTTAAAAACACA   TGGAATCCCCATAAGGATCTGCAG     0      0.2
+    ## 4       CCAACGACGCAGAGAAACACAA      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 5       CCAACGACGCAGAGAAACACAA       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 6       CCAACGACGCAGAGAAACACAA CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 7       CCAACGACGCAGAGAAACACAA        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 8   GGTGCAGTTACCTGACCCAAATAAAT         GTGGCGGCATGGGAACTT     0      0.2
+    ## 9   GGTGCAGTTACCTGACCCAAATAAAT      CGGCATGGGAACTTTCAGTGT     0      0.2
+    ## 10  GGTGCAGTTACCTGACCCAAATAAAT       GCCCACTAAGGCCAACACCT     0      0.2
+    ## 11  GGTGCAGTTACCTGACCCAAATAAAT          GTGGCGGCATGGGAACT     0      0.2
+    ## 12  GGTGCAGTTACCTGACCCAAATAAAT    GGCATGGGAACTTTCAGTGTCAT     0      0.2
+    ## 13  GGTGCAGTTACCTGACCCAAATAAAT       CACCTAAWGGCTGACCACGG     0      0.2
+    ## 14  GGTGCAGTTACCTGACCCAAATAAAT     CMACACCTAAWGGCTGACCACG     0      0.2
+    ## 15  GGTGCAGTTACCTGACCCAAATAAAT    CCCACTAAGGCCAACACCTAAAG     0      0.2
+    ## 16  GGTGCAGTTACCTGACCCAAATAAAT     CGGCATGGGAACTTTCAGTGTC     0      0.2
+    ## 17  GGTGCAGTTACCTGACCCAAATAAAT   GGCATGGGAACTTTCAGTGTCATC     0      0.2
+    ## 18  GGTGCAGTTACCTGACCCAAATAAAT        CCTAAWGGCTGACCACGGC     0      0.2
+    ## 19  GGTGCAGTTACCTGACCCAAATAAAT    CCAATTTCCACTCCAACACAGGC     0      0.2
+    ## 20  GGTGCAGTTACCTGACCCAAATAAAT          AAWGGCTGACCACGGCC     0      0.2
+    ## 21  GGTGCAGTTACCTGACCCAAATAAAT      GCCMACACCTAAWGGCTGACC     0      0.2
+    ## 22  GGTGCAGTTACCTGACCCAAATAAAT        GCCCACTAAGGCCAACACC     0      0.2
+    ## 23  GGTGCAGTTACCTGACCCAAATAAAT       TGACCACGGCCAATTTCCAC     0      0.2
+    ## 24  GGTGCAGTTACCTGACCCAAATAAAT     CCMACACCTAAWGGCTGACCAC     0      0.2
+    ## 25  GGTGCAGTTACCTGACCCAAATAAAT        TGCCCACTAAGGCCAACAC     0      0.2
+    ## 26  GGTGCAGTTACCTGACCCAAATAAAT      GCCCACTAAGGCCAACACCTA     0      0.2
+    ## 27  GGTGCAGTTACCTGACCCAAATAAAT     GGCATGGGAACTTTCAGTGTCA     0      0.2
+    ## 28  GGTGCAGTTACCTGACCCAAATAAAT       CTGACCACGGCCAATTTCCA     0      0.2
+    ## 29  GGTGCAGTTACCTGACCCAAATAAAT       CACGGCCAATTTCCACTCCA     0      0.2
+    ## 30  GGTGCAGTTACCTGACCCAAATAAAT     GCCMACACCTAAWGGCTGACCA     0      0.2
+    ## 31  GGTGCAGTTACCTGACCCAAATAAAT     GCCCACTAAKGCCMACACCTAA     0      0.2
+    ## 32  GGTGCAGTTACCTGACCCAAATAAAT      CACGGCCAATTTCCACTCCAA     0      0.2
+    ## 33  GGTGCAGTTACCTGACCCAAATAAAT    GCCCACTAAGGCCAACACCTAAA     0      0.2
+    ## 34    GCATGCTGCATGCCATAAATGTAT      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 35      TCCCAGCAGTAAGCAACAATGG    CCATATCCGACCCTGTGTCTGTT     0      0.2
+    ## 36      TCCCAGCAGTAAGCAACAATGG   AATCTACCATATCCGACCCTGTGT     0      0.2
+    ## 37      TCCCAGCAGTAAGCAACAATGG     CCATATCCGACCCTGTGTCTGT     0      0.2
+    ## 38      TCCCAGCAGTAAGCAACAATGG  TGAAATCTACCATATCCGACCCTGT     0      0.2
+    ## 39      TCCCAGCAGTAAGCAACAATGG    CTACCATATCCGACCCTGTGTCT     0      0.2
+    ## 40      TCCCAGCAGTAAGCAACAATGG TGAAATCTACCATATCCGACCCTGTG     0      0.2
+    ## 41      TCCCAGCAGTAAGCAACAATGG     ACCATATCCGACCCTGTGTCTG     0      0.2
+    ## 42      TCCCAGCAGTAAGCAACAATGG   CGACCCTGTGTCTGTTGCATTTTC     0      0.2
+    ## 43      TCCCAGCAGTAAGCAACAATGG ACAATAGCCTGTACATAAAACCAGCC     0      0.2
+    ## 44     CCAACGACGCAGAGAAACACAAG      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 45     CCAACGACGCAGAGAAACACAAG       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 46     CCAACGACGCAGAGAAACACAAG CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 47     CCAACGACGCAGAGAAACACAAG        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 48       GCTTTGAGGATCCAACACGGC     GCAGTGAAGTGTTCAGTTCCGT     0      0.2
+    ## 49       GCTTTGAGGATCCAACACGGC     GTGTTCAGTTCCGTGCACAGAT     0      0.2
+    ## 50       GCTTTGAGGATCCAACACGGC    GCAGTGAAGTGTTCAGTTCCGTG     0      0.2
+    ## 51       GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 52       GCTTTGAGGATCCAACACGGC      AGTGTTCAGTTCCGTGCACAG     0      0.2
+    ## 53       GCTTTGAGGATCCAACACGGC     AGTGAAGTGTTCAGTTCCGTGC     0      0.2
+    ## 54       GCTTTGAGGATCCAACACGGC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 55       GCTTTGAGGATCCAACACGGC      GTGTTCAGTTCCGTGCACAGA     0      0.2
+    ## 56       GCTTTGAGGATCCAACACGGC     GTGAAGTGTTCAGTTCCGTGCA     0      0.2
+    ## 57       GCTTTGAGGATCCAACACGGC     GAAGTGTTCAGTTCCGTGCACA     0      0.2
+    ## 58      TGTGCACGGAACTGAACACTTC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 59      TGTGCACGGAACTGAACACTTC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 60           TCGTGCTGCAACCGAGC   ATGTCTTGCAATGTTGCCTTAGGT     0      0.2
+    ## 61           TCGTGCTGCAACCGAGC  GTTGCCTTAGGTCCATGCATACTTA     0      0.2
+    ## 62           TCGTGCTGCAACCGAGC GTTGCCTTAGGTCCATGCATACTTAA     0      0.2
+    ## 63       CAGGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 64         GGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 65          CCCCCCCGCCAACTACTA     GTGCAGCATCCTTTTGACAGGT     0      0.2
+    ## 66          CCCCCCCGCCAACTACTA   CCTTATTTTCAGCYGGTGCAGCAT     0      0.2
+    ## 67          CCCCCCCGCCAACTACTA         TTTCAGCYGGTGCAGCAT     0      0.2
+    ## 68          CCCCCCCGCCAACTACTA  GTGCAGCATCCTTTTGACAGGTAAT     0      0.2
+    ## 69          CCCCCCCGCCAACTACTA  CCTTATTTTCAGCYGGTGCAGCATC     0      0.2
+    ## 70          CCCCCCCGCCAACTACTA    TCCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 71          CCCCCCCGCCAACTACTA     CCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 72          CCCCCCCGCCAACTACTA    GTGCAGCATCCTTTTGACAGGTA     0      0.2
+    ## 73          CCCCCCCGCCAACTACTA GTGCAGCATCCTTTTGACAGGTAATA     0      0.2
+    ## 74          CCCCCCCGCCAACTACTA CAGCATCCTTTTGACAGGTAATAGCA     0      0.2
+    ## 75          CCCCCCCGCCAACTACTA    CCTTATTTTCAGCYGGTGCAGCA     0      0.2
+    ## 76          CCCCCCCGCCAACTACTA          TTTCAGCYGGTGCAGCA     0      0.2
+    ## 77          CCCCCCCGCCAACTACTA   GTGCAGCATCCTTTTGACAGGTAA     0      0.2
+    ## 78      TGATCTGTGCACGGAACTGAAC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 79      TGATCTGTGCACGGAACTGAAC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 80   ACCTAAGGCAACATTGCAAGACATT CATACACAACATTGTGTGACGTTGTG     0      0.2
+    ## 81   ACCTAAGGCAACATTGCAAGACATT       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 82   ACCTAAGGCAACATTGCAAGACATT CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 83   ACCTAAGGCAACATTGCAAGACATT        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 84        CGGCGACCCTACAAGCTACC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 85        CGGCGACCCTACAAGCTACC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 86    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGGAACACCAAAGTT     0      0.2
+    ## 87    TCTCCTGTACCTGGGCAATATGAT        GGGGGGGGAACACCAAAGT     0      0.2
+    ## 88    TCTCCTGTACCTGGGCAATATGAT          AGTAGTTGGCGGGGGGG     0      0.2
+    ## 89    TCTCCTGTACCTGGGCAATATGAT      CAAACTAGTAGTTGGCGGGGG     0      0.2
+    ## 90    TCTCCTGTACCTGGGCAATATGAT      CCAAACTAGTAGTTGGCGGGG     0      0.2
+    ## 91    TCTCCTGTACCTGGGCAATATGAT         GGGGGGGGAACACCAAAG     0      0.2
+    ## 92    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGAACACCAAAGTTC     0      0.2
+    ## 93    TCTCCTGTACCTGGGCAATATGAT          CGGGGGGGGAACACCAA     0      0.2
+    ## 94    TCTCCTGTACCTGGGCAATATGAT         CGGGGGGGGAACACCAAA     0      0.2
+    ## 95   GCATGCTGCATGCCATAAATGTATA      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 96       TGCCGCCACGTCTAATGTTTC GCACAGCCCAAAATACATAACTGTGT     0      0.2
+    ## 97       TGCCGCCACGTCTAATGTTTC  GGCACAGCCCAAAATACATAACTGT     0      0.2
+    ## 98       TGCCGCCACGTCTAATGTTTC GCCCAAAATACATAACTGTGTCTGCT     0      0.2
+    ## 99       TGCCGCCACGTCTAATGTTTC   GGGCACAGCCCAAAATACATAACT     0      0.2
+    ## 100      TGCCGCCACGTCTAATGTTTC GGCACAGCCCAAAATACATAACTGTG     0      0.2
+    ##     products similar_signatures        missing_signatures enzyme digest_score
+    ## 1          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 2          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 3          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 4          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 5          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 6          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 7          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 8          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 9          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 10         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 11         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 12         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 13         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 14         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 15         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 16         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 17         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 18         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 19         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 20         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 21         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 22         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 23         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 24         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 25         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 26         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 27         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 28         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 29         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 30         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 31         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 32         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 33         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 34         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 35         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 36         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 37         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 38         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 39         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 40         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 41         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 42         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 43         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 44         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 45         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 46         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 47         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 48         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 49         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 50         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 51         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 52         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 53         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 54         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 55         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 56         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 57         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 58         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 59         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 60         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 61         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 62         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 63         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 64         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 65         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 66         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 67         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 68         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 69         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 70         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 71         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 72         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 73         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 74         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 75         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 76         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 77         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 78         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 79         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 80         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 81         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 82         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 83         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 84         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 85         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 86         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 87         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 88         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 89         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 90         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 91         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 92         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 93         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 94         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 95         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 96         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 97         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 98         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 99         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 100        0                    HPV16, HPV11, HPV4, HPV17                   0
+    ##     fragments
+    ## 1           0
+    ## 2           0
+    ## 3           0
+    ## 4           0
+    ## 5           0
+    ## 6           0
+    ## 7           0
+    ## 8           0
+    ## 9           0
+    ## 10          0
+    ## 11          0
+    ## 12          0
+    ## 13          0
+    ## 14          0
+    ## 15          0
+    ## 16          0
+    ## 17          0
+    ## 18          0
+    ## 19          0
+    ## 20          0
+    ## 21          0
+    ## 22          0
+    ## 23          0
+    ## 24          0
+    ## 25          0
+    ## 26          0
+    ## 27          0
+    ## 28          0
+    ## 29          0
+    ## 30          0
+    ## 31          0
+    ## 32          0
+    ## 33          0
+    ## 34          0
+    ## 35          0
+    ## 36          0
+    ## 37          0
+    ## 38          0
+    ## 39          0
+    ## 40          0
+    ## 41          0
+    ## 42          0
+    ## 43          0
+    ## 44          0
+    ## 45          0
+    ## 46          0
+    ## 47          0
+    ## 48          0
+    ## 49          0
+    ## 50          0
+    ## 51          0
+    ## 52          0
+    ## 53          0
+    ## 54          0
+    ## 55          0
+    ## 56          0
+    ## 57          0
+    ## 58          0
+    ## 59          0
+    ## 60          0
+    ## 61          0
+    ## 62          0
+    ## 63          0
+    ## 64          0
+    ## 65          0
+    ## 66          0
+    ## 67          0
+    ## 68          0
+    ## 69          0
+    ## 70          0
+    ## 71          0
+    ## 72          0
+    ## 73          0
+    ## 74          0
+    ## 75          0
+    ## 76          0
+    ## 77          0
+    ## 78          0
+    ## 79          0
+    ## 80          0
+    ## 81          0
+    ## 82          0
+    ## 83          0
+    ## 84          0
+    ## 85          0
+    ## 86          0
+    ## 87          0
+    ## 88          0
+    ## 89          0
+    ## 90          0
+    ## 91          0
+    ## 92          0
+    ## 93          0
+    ## 94          0
+    ## 95          0
+    ## 96          0
+    ## 97          0
+    ## 98          0
+    ## 99          0
+    ## 100         0
+    ## 
+    ## [[7]]
+    ##                 forward_primer             reverse_primer score coverage
+    ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
+    ## 2   GCCCCCCTTTAGAACTTAAAAACACA  CCCCATAAGGATCTGCAGACATTTG     0      0.2
+    ## 3   GCCCCCCTTTAGAACTTAAAAACACA   TGGAATCCCCATAAGGATCTGCAG     0      0.2
+    ## 4       CCAACGACGCAGAGAAACACAA      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 5       CCAACGACGCAGAGAAACACAA       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 6       CCAACGACGCAGAGAAACACAA CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 7       CCAACGACGCAGAGAAACACAA        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 8   GGTGCAGTTACCTGACCCAAATAAAT         GTGGCGGCATGGGAACTT     0      0.2
+    ## 9   GGTGCAGTTACCTGACCCAAATAAAT      CGGCATGGGAACTTTCAGTGT     0      0.2
+    ## 10  GGTGCAGTTACCTGACCCAAATAAAT       GCCCACTAAGGCCAACACCT     0      0.2
+    ## 11  GGTGCAGTTACCTGACCCAAATAAAT          GTGGCGGCATGGGAACT     0      0.2
+    ## 12  GGTGCAGTTACCTGACCCAAATAAAT    GGCATGGGAACTTTCAGTGTCAT     0      0.2
+    ## 13  GGTGCAGTTACCTGACCCAAATAAAT       CACCTAAWGGCTGACCACGG     0      0.2
+    ## 14  GGTGCAGTTACCTGACCCAAATAAAT     CMACACCTAAWGGCTGACCACG     0      0.2
+    ## 15  GGTGCAGTTACCTGACCCAAATAAAT    CCCACTAAGGCCAACACCTAAAG     0      0.2
+    ## 16  GGTGCAGTTACCTGACCCAAATAAAT     CGGCATGGGAACTTTCAGTGTC     0      0.2
+    ## 17  GGTGCAGTTACCTGACCCAAATAAAT   GGCATGGGAACTTTCAGTGTCATC     0      0.2
+    ## 18  GGTGCAGTTACCTGACCCAAATAAAT        CCTAAWGGCTGACCACGGC     0      0.2
+    ## 19  GGTGCAGTTACCTGACCCAAATAAAT    CCAATTTCCACTCCAACACAGGC     0      0.2
+    ## 20  GGTGCAGTTACCTGACCCAAATAAAT          AAWGGCTGACCACGGCC     0      0.2
+    ## 21  GGTGCAGTTACCTGACCCAAATAAAT      GCCMACACCTAAWGGCTGACC     0      0.2
+    ## 22  GGTGCAGTTACCTGACCCAAATAAAT        GCCCACTAAGGCCAACACC     0      0.2
+    ## 23  GGTGCAGTTACCTGACCCAAATAAAT       TGACCACGGCCAATTTCCAC     0      0.2
+    ## 24  GGTGCAGTTACCTGACCCAAATAAAT     CCMACACCTAAWGGCTGACCAC     0      0.2
+    ## 25  GGTGCAGTTACCTGACCCAAATAAAT        TGCCCACTAAGGCCAACAC     0      0.2
+    ## 26  GGTGCAGTTACCTGACCCAAATAAAT      GCCCACTAAGGCCAACACCTA     0      0.2
+    ## 27  GGTGCAGTTACCTGACCCAAATAAAT     GGCATGGGAACTTTCAGTGTCA     0      0.2
+    ## 28  GGTGCAGTTACCTGACCCAAATAAAT       CTGACCACGGCCAATTTCCA     0      0.2
+    ## 29  GGTGCAGTTACCTGACCCAAATAAAT       CACGGCCAATTTCCACTCCA     0      0.2
+    ## 30  GGTGCAGTTACCTGACCCAAATAAAT     GCCMACACCTAAWGGCTGACCA     0      0.2
+    ## 31  GGTGCAGTTACCTGACCCAAATAAAT     GCCCACTAAKGCCMACACCTAA     0      0.2
+    ## 32  GGTGCAGTTACCTGACCCAAATAAAT      CACGGCCAATTTCCACTCCAA     0      0.2
+    ## 33  GGTGCAGTTACCTGACCCAAATAAAT    GCCCACTAAGGCCAACACCTAAA     0      0.2
+    ## 34    GCATGCTGCATGCCATAAATGTAT      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 35      TCCCAGCAGTAAGCAACAATGG    CCATATCCGACCCTGTGTCTGTT     0      0.2
+    ## 36      TCCCAGCAGTAAGCAACAATGG   AATCTACCATATCCGACCCTGTGT     0      0.2
+    ## 37      TCCCAGCAGTAAGCAACAATGG     CCATATCCGACCCTGTGTCTGT     0      0.2
+    ## 38      TCCCAGCAGTAAGCAACAATGG  TGAAATCTACCATATCCGACCCTGT     0      0.2
+    ## 39      TCCCAGCAGTAAGCAACAATGG    CTACCATATCCGACCCTGTGTCT     0      0.2
+    ## 40      TCCCAGCAGTAAGCAACAATGG TGAAATCTACCATATCCGACCCTGTG     0      0.2
+    ## 41      TCCCAGCAGTAAGCAACAATGG     ACCATATCCGACCCTGTGTCTG     0      0.2
+    ## 42      TCCCAGCAGTAAGCAACAATGG   CGACCCTGTGTCTGTTGCATTTTC     0      0.2
+    ## 43      TCCCAGCAGTAAGCAACAATGG ACAATAGCCTGTACATAAAACCAGCC     0      0.2
+    ## 44     CCAACGACGCAGAGAAACACAAG      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 45     CCAACGACGCAGAGAAACACAAG       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 46     CCAACGACGCAGAGAAACACAAG CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 47     CCAACGACGCAGAGAAACACAAG        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 48       GCTTTGAGGATCCAACACGGC     GCAGTGAAGTGTTCAGTTCCGT     0      0.2
+    ## 49       GCTTTGAGGATCCAACACGGC     GTGTTCAGTTCCGTGCACAGAT     0      0.2
+    ## 50       GCTTTGAGGATCCAACACGGC    GCAGTGAAGTGTTCAGTTCCGTG     0      0.2
+    ## 51       GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 52       GCTTTGAGGATCCAACACGGC      AGTGTTCAGTTCCGTGCACAG     0      0.2
+    ## 53       GCTTTGAGGATCCAACACGGC     AGTGAAGTGTTCAGTTCCGTGC     0      0.2
+    ## 54       GCTTTGAGGATCCAACACGGC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 55       GCTTTGAGGATCCAACACGGC      GTGTTCAGTTCCGTGCACAGA     0      0.2
+    ## 56       GCTTTGAGGATCCAACACGGC     GTGAAGTGTTCAGTTCCGTGCA     0      0.2
+    ## 57       GCTTTGAGGATCCAACACGGC     GAAGTGTTCAGTTCCGTGCACA     0      0.2
+    ## 58      TGTGCACGGAACTGAACACTTC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 59      TGTGCACGGAACTGAACACTTC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 60           TCGTGCTGCAACCGAGC   ATGTCTTGCAATGTTGCCTTAGGT     0      0.2
+    ## 61           TCGTGCTGCAACCGAGC  GTTGCCTTAGGTCCATGCATACTTA     0      0.2
+    ## 62           TCGTGCTGCAACCGAGC GTTGCCTTAGGTCCATGCATACTTAA     0      0.2
+    ## 63       CAGGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 64         GGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 65          CCCCCCCGCCAACTACTA     GTGCAGCATCCTTTTGACAGGT     0      0.2
+    ## 66          CCCCCCCGCCAACTACTA   CCTTATTTTCAGCYGGTGCAGCAT     0      0.2
+    ## 67          CCCCCCCGCCAACTACTA         TTTCAGCYGGTGCAGCAT     0      0.2
+    ## 68          CCCCCCCGCCAACTACTA  GTGCAGCATCCTTTTGACAGGTAAT     0      0.2
+    ## 69          CCCCCCCGCCAACTACTA  CCTTATTTTCAGCYGGTGCAGCATC     0      0.2
+    ## 70          CCCCCCCGCCAACTACTA    TCCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 71          CCCCCCCGCCAACTACTA     CCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 72          CCCCCCCGCCAACTACTA    GTGCAGCATCCTTTTGACAGGTA     0      0.2
+    ## 73          CCCCCCCGCCAACTACTA GTGCAGCATCCTTTTGACAGGTAATA     0      0.2
+    ## 74          CCCCCCCGCCAACTACTA CAGCATCCTTTTGACAGGTAATAGCA     0      0.2
+    ## 75          CCCCCCCGCCAACTACTA    CCTTATTTTCAGCYGGTGCAGCA     0      0.2
+    ## 76          CCCCCCCGCCAACTACTA          TTTCAGCYGGTGCAGCA     0      0.2
+    ## 77          CCCCCCCGCCAACTACTA   GTGCAGCATCCTTTTGACAGGTAA     0      0.2
+    ## 78      TGATCTGTGCACGGAACTGAAC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 79      TGATCTGTGCACGGAACTGAAC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 80   ACCTAAGGCAACATTGCAAGACATT CATACACAACATTGTGTGACGTTGTG     0      0.2
+    ## 81   ACCTAAGGCAACATTGCAAGACATT       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 82   ACCTAAGGCAACATTGCAAGACATT CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 83   ACCTAAGGCAACATTGCAAGACATT        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 84        CGGCGACCCTACAAGCTACC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 85        CGGCGACCCTACAAGCTACC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 86    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGGAACACCAAAGTT     0      0.2
+    ## 87    TCTCCTGTACCTGGGCAATATGAT        GGGGGGGGAACACCAAAGT     0      0.2
+    ## 88    TCTCCTGTACCTGGGCAATATGAT          AGTAGTTGGCGGGGGGG     0      0.2
+    ## 89    TCTCCTGTACCTGGGCAATATGAT      CAAACTAGTAGTTGGCGGGGG     0      0.2
+    ## 90    TCTCCTGTACCTGGGCAATATGAT      CCAAACTAGTAGTTGGCGGGG     0      0.2
+    ## 91    TCTCCTGTACCTGGGCAATATGAT         GGGGGGGGAACACCAAAG     0      0.2
+    ## 92    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGAACACCAAAGTTC     0      0.2
+    ## 93    TCTCCTGTACCTGGGCAATATGAT          CGGGGGGGGAACACCAA     0      0.2
+    ## 94    TCTCCTGTACCTGGGCAATATGAT         CGGGGGGGGAACACCAAA     0      0.2
+    ## 95   GCATGCTGCATGCCATAAATGTATA      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 96       TGCCGCCACGTCTAATGTTTC GCACAGCCCAAAATACATAACTGTGT     0      0.2
+    ## 97       TGCCGCCACGTCTAATGTTTC  GGCACAGCCCAAAATACATAACTGT     0      0.2
+    ## 98       TGCCGCCACGTCTAATGTTTC GCCCAAAATACATAACTGTGTCTGCT     0      0.2
+    ## 99       TGCCGCCACGTCTAATGTTTC   GGGCACAGCCCAAAATACATAACT     0      0.2
+    ## 100      TGCCGCCACGTCTAATGTTTC GGCACAGCCCAAAATACATAACTGTG     0      0.2
+    ##     products similar_signatures        missing_signatures enzyme digest_score
+    ## 1          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 2          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 3          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 4          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 5          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 6          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 7          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 8          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 9          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 10         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 11         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 12         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 13         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 14         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 15         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 16         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 17         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 18         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 19         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 20         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 21         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 22         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 23         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 24         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 25         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 26         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 27         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 28         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 29         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 30         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 31         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 32         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 33         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 34         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 35         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 36         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 37         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 38         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 39         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 40         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 41         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 42         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 43         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 44         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 45         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 46         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 47         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 48         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 49         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 50         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 51         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 52         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 53         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 54         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 55         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 56         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 57         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 58         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 59         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 60         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 61         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 62         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 63         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 64         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 65         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 66         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 67         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 68         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 69         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 70         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 71         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 72         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 73         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 74         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 75         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 76         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 77         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 78         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 79         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 80         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 81         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 82         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 83         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 84         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 85         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 86         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 87         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 88         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 89         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 90         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 91         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 92         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 93         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 94         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 95         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 96         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 97         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 98         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 99         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 100        0                    HPV16, HPV11, HPV4, HPV17                   0
+    ##     fragments
+    ## 1           0
+    ## 2           0
+    ## 3           0
+    ## 4           0
+    ## 5           0
+    ## 6           0
+    ## 7           0
+    ## 8           0
+    ## 9           0
+    ## 10          0
+    ## 11          0
+    ## 12          0
+    ## 13          0
+    ## 14          0
+    ## 15          0
+    ## 16          0
+    ## 17          0
+    ## 18          0
+    ## 19          0
+    ## 20          0
+    ## 21          0
+    ## 22          0
+    ## 23          0
+    ## 24          0
+    ## 25          0
+    ## 26          0
+    ## 27          0
+    ## 28          0
+    ## 29          0
+    ## 30          0
+    ## 31          0
+    ## 32          0
+    ## 33          0
+    ## 34          0
+    ## 35          0
+    ## 36          0
+    ## 37          0
+    ## 38          0
+    ## 39          0
+    ## 40          0
+    ## 41          0
+    ## 42          0
+    ## 43          0
+    ## 44          0
+    ## 45          0
+    ## 46          0
+    ## 47          0
+    ## 48          0
+    ## 49          0
+    ## 50          0
+    ## 51          0
+    ## 52          0
+    ## 53          0
+    ## 54          0
+    ## 55          0
+    ## 56          0
+    ## 57          0
+    ## 58          0
+    ## 59          0
+    ## 60          0
+    ## 61          0
+    ## 62          0
+    ## 63          0
+    ## 64          0
+    ## 65          0
+    ## 66          0
+    ## 67          0
+    ## 68          0
+    ## 69          0
+    ## 70          0
+    ## 71          0
+    ## 72          0
+    ## 73          0
+    ## 74          0
+    ## 75          0
+    ## 76          0
+    ## 77          0
+    ## 78          0
+    ## 79          0
+    ## 80          0
+    ## 81          0
+    ## 82          0
+    ## 83          0
+    ## 84          0
+    ## 85          0
+    ## 86          0
+    ## 87          0
+    ## 88          0
+    ## 89          0
+    ## 90          0
+    ## 91          0
+    ## 92          0
+    ## 93          0
+    ## 94          0
+    ## 95          0
+    ## 96          0
+    ## 97          0
+    ## 98          0
+    ## 99          0
+    ## 100         0
+    ## 
+    ## [[8]]
+    ##                 forward_primer             reverse_primer score coverage
+    ## 1        GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 2        GCTTTGAGGATCCAACACGGC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 3         CGGCGACCCTACAAGCTACC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 4         CGGCGACCCTACAAGCTACC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 5       TCCCAGCAGTAAGCAACAATGG    CCATATCCGACCCTGTGTCTGTT     0      0.2
+    ## 6       TCCCAGCAGTAAGCAACAATGG   AATCTACCATATCCGACCCTGTGT     0      0.2
+    ## 7       TCCCAGCAGTAAGCAACAATGG     CCATATCCGACCCTGTGTCTGT     0      0.2
+    ## 8       TCCCAGCAGTAAGCAACAATGG  TGAAATCTACCATATCCGACCCTGT     0      0.2
+    ## 9       TCCCAGCAGTAAGCAACAATGG    CTACCATATCCGACCCTGTGTCT     0      0.2
+    ## 10      TCCCAGCAGTAAGCAACAATGG TGAAATCTACCATATCCGACCCTGTG     0      0.2
+    ## 11      TCCCAGCAGTAAGCAACAATGG     ACCATATCCGACCCTGTGTCTG     0      0.2
+    ## 12      TCCCAGCAGTAAGCAACAATGG   CGACCCTGTGTCTGTTGCATTTTC     0      0.2
+    ## 13  GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
+    ## 14  GCCCCCCTTTAGAACTTAAAAACACA  CCCCATAAGGATCTGCAGACATTTG     0      0.2
+    ## 15  GCCCCCCTTTAGAACTTAAAAACACA   TGGAATCCCCATAAGGATCTGCAG     0      0.2
+    ## 16      CCAACGACGCAGAGAAACACAA      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 17      CCAACGACGCAGAGAAACACAA       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 18      CCAACGACGCAGAGAAACACAA CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 19      CCAACGACGCAGAGAAACACAA        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 20  GGTGCAGTTACCTGACCCAAATAAAT         GTGGCGGCATGGGAACTT     0      0.2
+    ## 21  GGTGCAGTTACCTGACCCAAATAAAT      CGGCATGGGAACTTTCAGTGT     0      0.2
+    ## 22  GGTGCAGTTACCTGACCCAAATAAAT       GCCCACTAAGGCCAACACCT     0      0.2
+    ## 23  GGTGCAGTTACCTGACCCAAATAAAT          GTGGCGGCATGGGAACT     0      0.2
+    ## 24  GGTGCAGTTACCTGACCCAAATAAAT    GGCATGGGAACTTTCAGTGTCAT     0      0.2
+    ## 25  GGTGCAGTTACCTGACCCAAATAAAT       CACCTAAWGGCTGACCACGG     0      0.2
+    ## 26  GGTGCAGTTACCTGACCCAAATAAAT     CMACACCTAAWGGCTGACCACG     0      0.2
+    ## 27  GGTGCAGTTACCTGACCCAAATAAAT    CCCACTAAGGCCAACACCTAAAG     0      0.2
+    ## 28  GGTGCAGTTACCTGACCCAAATAAAT     CGGCATGGGAACTTTCAGTGTC     0      0.2
+    ## 29  GGTGCAGTTACCTGACCCAAATAAAT   GGCATGGGAACTTTCAGTGTCATC     0      0.2
+    ## 30  GGTGCAGTTACCTGACCCAAATAAAT        CCTAAWGGCTGACCACGGC     0      0.2
+    ## 31  GGTGCAGTTACCTGACCCAAATAAAT    CCAATTTCCACTCCAACACAGGC     0      0.2
+    ## 32  GGTGCAGTTACCTGACCCAAATAAAT          AAWGGCTGACCACGGCC     0      0.2
+    ## 33  GGTGCAGTTACCTGACCCAAATAAAT      GCCMACACCTAAWGGCTGACC     0      0.2
+    ## 34  GGTGCAGTTACCTGACCCAAATAAAT        GCCCACTAAGGCCAACACC     0      0.2
+    ## 35  GGTGCAGTTACCTGACCCAAATAAAT       TGACCACGGCCAATTTCCAC     0      0.2
+    ## 36  GGTGCAGTTACCTGACCCAAATAAAT     CCMACACCTAAWGGCTGACCAC     0      0.2
+    ## 37  GGTGCAGTTACCTGACCCAAATAAAT        TGCCCACTAAGGCCAACAC     0      0.2
+    ## 38  GGTGCAGTTACCTGACCCAAATAAAT      GCCCACTAAGGCCAACACCTA     0      0.2
+    ## 39  GGTGCAGTTACCTGACCCAAATAAAT     GGCATGGGAACTTTCAGTGTCA     0      0.2
+    ## 40  GGTGCAGTTACCTGACCCAAATAAAT       CTGACCACGGCCAATTTCCA     0      0.2
+    ## 41  GGTGCAGTTACCTGACCCAAATAAAT       CACGGCCAATTTCCACTCCA     0      0.2
+    ## 42  GGTGCAGTTACCTGACCCAAATAAAT     GCCMACACCTAAWGGCTGACCA     0      0.2
+    ## 43  GGTGCAGTTACCTGACCCAAATAAAT     GCCCACTAAKGCCMACACCTAA     0      0.2
+    ## 44  GGTGCAGTTACCTGACCCAAATAAAT      CACGGCCAATTTCCACTCCAA     0      0.2
+    ## 45  GGTGCAGTTACCTGACCCAAATAAAT    GCCCACTAAGGCCAACACCTAAA     0      0.2
+    ## 46    GCATGCTGCATGCCATAAATGTAT      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 47      TCCCAGCAGTAAGCAACAATGG ACAATAGCCTGTACATAAAACCAGCC     0      0.2
+    ## 48     CCAACGACGCAGAGAAACACAAG      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 49     CCAACGACGCAGAGAAACACAAG       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 50     CCAACGACGCAGAGAAACACAAG CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 51     CCAACGACGCAGAGAAACACAAG        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 52       GCTTTGAGGATCCAACACGGC     GCAGTGAAGTGTTCAGTTCCGT     0      0.2
+    ## 53       GCTTTGAGGATCCAACACGGC     GTGTTCAGTTCCGTGCACAGAT     0      0.2
+    ## 54       GCTTTGAGGATCCAACACGGC    GCAGTGAAGTGTTCAGTTCCGTG     0      0.2
+    ## 55       GCTTTGAGGATCCAACACGGC      AGTGTTCAGTTCCGTGCACAG     0      0.2
+    ## 56       GCTTTGAGGATCCAACACGGC     AGTGAAGTGTTCAGTTCCGTGC     0      0.2
+    ## 57       GCTTTGAGGATCCAACACGGC      GTGTTCAGTTCCGTGCACAGA     0      0.2
+    ## 58       GCTTTGAGGATCCAACACGGC     GTGAAGTGTTCAGTTCCGTGCA     0      0.2
+    ## 59       GCTTTGAGGATCCAACACGGC     GAAGTGTTCAGTTCCGTGCACA     0      0.2
+    ## 60      TGTGCACGGAACTGAACACTTC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 61      TGTGCACGGAACTGAACACTTC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 62           TCGTGCTGCAACCGAGC   ATGTCTTGCAATGTTGCCTTAGGT     0      0.2
+    ## 63           TCGTGCTGCAACCGAGC  GTTGCCTTAGGTCCATGCATACTTA     0      0.2
+    ## 64           TCGTGCTGCAACCGAGC GTTGCCTTAGGTCCATGCATACTTAA     0      0.2
+    ## 65       CAGGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 66         GGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 67          CCCCCCCGCCAACTACTA     GTGCAGCATCCTTTTGACAGGT     0      0.2
+    ## 68          CCCCCCCGCCAACTACTA   CCTTATTTTCAGCYGGTGCAGCAT     0      0.2
+    ## 69          CCCCCCCGCCAACTACTA         TTTCAGCYGGTGCAGCAT     0      0.2
+    ## 70          CCCCCCCGCCAACTACTA  GTGCAGCATCCTTTTGACAGGTAAT     0      0.2
+    ## 71          CCCCCCCGCCAACTACTA  CCTTATTTTCAGCYGGTGCAGCATC     0      0.2
+    ## 72          CCCCCCCGCCAACTACTA    TCCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 73          CCCCCCCGCCAACTACTA     CCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 74          CCCCCCCGCCAACTACTA    GTGCAGCATCCTTTTGACAGGTA     0      0.2
+    ## 75          CCCCCCCGCCAACTACTA GTGCAGCATCCTTTTGACAGGTAATA     0      0.2
+    ## 76          CCCCCCCGCCAACTACTA CAGCATCCTTTTGACAGGTAATAGCA     0      0.2
+    ## 77          CCCCCCCGCCAACTACTA    CCTTATTTTCAGCYGGTGCAGCA     0      0.2
+    ## 78          CCCCCCCGCCAACTACTA          TTTCAGCYGGTGCAGCA     0      0.2
+    ## 79          CCCCCCCGCCAACTACTA   GTGCAGCATCCTTTTGACAGGTAA     0      0.2
+    ## 80      TGATCTGTGCACGGAACTGAAC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 81      TGATCTGTGCACGGAACTGAAC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 82   ACCTAAGGCAACATTGCAAGACATT CATACACAACATTGTGTGACGTTGTG     0      0.2
+    ## 83   ACCTAAGGCAACATTGCAAGACATT       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 84   ACCTAAGGCAACATTGCAAGACATT CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 85   ACCTAAGGCAACATTGCAAGACATT        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 86    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGGAACACCAAAGTT     0      0.2
+    ## 87    TCTCCTGTACCTGGGCAATATGAT        GGGGGGGGAACACCAAAGT     0      0.2
+    ## 88    TCTCCTGTACCTGGGCAATATGAT          AGTAGTTGGCGGGGGGG     0      0.2
+    ## 89    TCTCCTGTACCTGGGCAATATGAT      CAAACTAGTAGTTGGCGGGGG     0      0.2
+    ## 90    TCTCCTGTACCTGGGCAATATGAT      CCAAACTAGTAGTTGGCGGGG     0      0.2
+    ## 91    TCTCCTGTACCTGGGCAATATGAT         GGGGGGGGAACACCAAAG     0      0.2
+    ## 92    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGAACACCAAAGTTC     0      0.2
+    ## 93    TCTCCTGTACCTGGGCAATATGAT          CGGGGGGGGAACACCAA     0      0.2
+    ## 94    TCTCCTGTACCTGGGCAATATGAT         CGGGGGGGGAACACCAAA     0      0.2
+    ## 95   GCATGCTGCATGCCATAAATGTATA      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 96       TGCCGCCACGTCTAATGTTTC GCACAGCCCAAAATACATAACTGTGT     0      0.2
+    ## 97       TGCCGCCACGTCTAATGTTTC  GGCACAGCCCAAAATACATAACTGT     0      0.2
+    ## 98       TGCCGCCACGTCTAATGTTTC GCCCAAAATACATAACTGTGTCTGCT     0      0.2
+    ## 99       TGCCGCCACGTCTAATGTTTC   GGGCACAGCCCAAAATACATAACT     0      0.2
+    ## 100      TGCCGCCACGTCTAATGTTTC GGCACAGCCCAAAATACATAACTGTG     0      0.2
+    ##     products similar_signatures        missing_signatures enzyme digest_score
+    ## 1          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 2          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 3          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 4          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 5          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 6          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 7          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 8          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 9          0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 10         0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 11         0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 12         0                    HPV16, HPV11, HPV4, HPV17   AccI            0
+    ## 13         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 14         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 15         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 16         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 17         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 18         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 19         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 20         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 21         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 22         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 23         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 24         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 25         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 26         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 27         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 28         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 29         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 30         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 31         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 32         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 33         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 34         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 35         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 36         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 37         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 38         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 39         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 40         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 41         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 42         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 43         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 44         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 45         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 46         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 47         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 48         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 49         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 50         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 51         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 52         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 53         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 54         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 55         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 56         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 57         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 58         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 59         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 60         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 61         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 62         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 63         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 64         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 65         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 66         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 67         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 68         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 69         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 70         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 71         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 72         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 73         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 74         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 75         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 76         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 77         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 78         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 79         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 80         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 81         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 82         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 83         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 84         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 85         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 86         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 87         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 88         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 89         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 90         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 91         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 92         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 93         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 94         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 95         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 96         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 97         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 98         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 99         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 100        0                    HPV16, HPV11, HPV4, HPV17                   0
+    ##     fragments
+    ## 1           4
+    ## 2           4
+    ## 3           4
+    ## 4           4
+    ## 5           2
+    ## 6           2
+    ## 7           2
+    ## 8           2
+    ## 9           2
+    ## 10          2
+    ## 11          2
+    ## 12          2
+    ## 13          0
+    ## 14          0
+    ## 15          0
+    ## 16          0
+    ## 17          0
+    ## 18          0
+    ## 19          0
+    ## 20          0
+    ## 21          0
+    ## 22          0
+    ## 23          0
+    ## 24          0
+    ## 25          0
+    ## 26          0
+    ## 27          0
+    ## 28          0
+    ## 29          0
+    ## 30          0
+    ## 31          0
+    ## 32          0
+    ## 33          0
+    ## 34          0
+    ## 35          0
+    ## 36          0
+    ## 37          0
+    ## 38          0
+    ## 39          0
+    ## 40          0
+    ## 41          0
+    ## 42          0
+    ## 43          0
+    ## 44          0
+    ## 45          0
+    ## 46          0
+    ## 47          0
+    ## 48          0
+    ## 49          0
+    ## 50          0
+    ## 51          0
+    ## 52          0
+    ## 53          0
+    ## 54          0
+    ## 55          0
+    ## 56          0
+    ## 57          0
+    ## 58          0
+    ## 59          0
+    ## 60          0
+    ## 61          0
+    ## 62          0
+    ## 63          0
+    ## 64          0
+    ## 65          0
+    ## 66          0
+    ## 67          0
+    ## 68          0
+    ## 69          0
+    ## 70          0
+    ## 71          0
+    ## 72          0
+    ## 73          0
+    ## 74          0
+    ## 75          0
+    ## 76          0
+    ## 77          0
+    ## 78          0
+    ## 79          0
+    ## 80          0
+    ## 81          0
+    ## 82          0
+    ## 83          0
+    ## 84          0
+    ## 85          0
+    ## 86          0
+    ## 87          0
+    ## 88          0
+    ## 89          0
+    ## 90          0
+    ## 91          0
+    ## 92          0
+    ## 93          0
+    ## 94          0
+    ## 95          0
+    ## 96          0
+    ## 97          0
+    ## 98          0
+    ## 99          0
+    ## 100         0
+    ## 
+    ## [[9]]
+    ##                 forward_primer             reverse_primer score coverage
+    ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
+    ## 2   GCCCCCCTTTAGAACTTAAAAACACA  CCCCATAAGGATCTGCAGACATTTG     0      0.2
+    ## 3   GCCCCCCTTTAGAACTTAAAAACACA   TGGAATCCCCATAAGGATCTGCAG     0      0.2
+    ## 4       CCAACGACGCAGAGAAACACAA      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 5       CCAACGACGCAGAGAAACACAA       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 6       CCAACGACGCAGAGAAACACAA CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 7       CCAACGACGCAGAGAAACACAA        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 8   GGTGCAGTTACCTGACCCAAATAAAT         GTGGCGGCATGGGAACTT     0      0.2
+    ## 9   GGTGCAGTTACCTGACCCAAATAAAT      CGGCATGGGAACTTTCAGTGT     0      0.2
+    ## 10  GGTGCAGTTACCTGACCCAAATAAAT       GCCCACTAAGGCCAACACCT     0      0.2
+    ## 11  GGTGCAGTTACCTGACCCAAATAAAT          GTGGCGGCATGGGAACT     0      0.2
+    ## 12  GGTGCAGTTACCTGACCCAAATAAAT    GGCATGGGAACTTTCAGTGTCAT     0      0.2
+    ## 13  GGTGCAGTTACCTGACCCAAATAAAT       CACCTAAWGGCTGACCACGG     0      0.2
+    ## 14  GGTGCAGTTACCTGACCCAAATAAAT     CMACACCTAAWGGCTGACCACG     0      0.2
+    ## 15  GGTGCAGTTACCTGACCCAAATAAAT    CCCACTAAGGCCAACACCTAAAG     0      0.2
+    ## 16  GGTGCAGTTACCTGACCCAAATAAAT     CGGCATGGGAACTTTCAGTGTC     0      0.2
+    ## 17  GGTGCAGTTACCTGACCCAAATAAAT   GGCATGGGAACTTTCAGTGTCATC     0      0.2
+    ## 18  GGTGCAGTTACCTGACCCAAATAAAT        CCTAAWGGCTGACCACGGC     0      0.2
+    ## 19  GGTGCAGTTACCTGACCCAAATAAAT    CCAATTTCCACTCCAACACAGGC     0      0.2
+    ## 20  GGTGCAGTTACCTGACCCAAATAAAT          AAWGGCTGACCACGGCC     0      0.2
+    ## 21  GGTGCAGTTACCTGACCCAAATAAAT      GCCMACACCTAAWGGCTGACC     0      0.2
+    ## 22  GGTGCAGTTACCTGACCCAAATAAAT        GCCCACTAAGGCCAACACC     0      0.2
+    ## 23  GGTGCAGTTACCTGACCCAAATAAAT       TGACCACGGCCAATTTCCAC     0      0.2
+    ## 24  GGTGCAGTTACCTGACCCAAATAAAT     CCMACACCTAAWGGCTGACCAC     0      0.2
+    ## 25  GGTGCAGTTACCTGACCCAAATAAAT        TGCCCACTAAGGCCAACAC     0      0.2
+    ## 26  GGTGCAGTTACCTGACCCAAATAAAT      GCCCACTAAGGCCAACACCTA     0      0.2
+    ## 27  GGTGCAGTTACCTGACCCAAATAAAT     GGCATGGGAACTTTCAGTGTCA     0      0.2
+    ## 28  GGTGCAGTTACCTGACCCAAATAAAT       CTGACCACGGCCAATTTCCA     0      0.2
+    ## 29  GGTGCAGTTACCTGACCCAAATAAAT       CACGGCCAATTTCCACTCCA     0      0.2
+    ## 30  GGTGCAGTTACCTGACCCAAATAAAT     GCCMACACCTAAWGGCTGACCA     0      0.2
+    ## 31  GGTGCAGTTACCTGACCCAAATAAAT     GCCCACTAAKGCCMACACCTAA     0      0.2
+    ## 32  GGTGCAGTTACCTGACCCAAATAAAT      CACGGCCAATTTCCACTCCAA     0      0.2
+    ## 33  GGTGCAGTTACCTGACCCAAATAAAT    GCCCACTAAGGCCAACACCTAAA     0      0.2
+    ## 34    GCATGCTGCATGCCATAAATGTAT      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 35      TCCCAGCAGTAAGCAACAATGG    CCATATCCGACCCTGTGTCTGTT     0      0.2
+    ## 36      TCCCAGCAGTAAGCAACAATGG   AATCTACCATATCCGACCCTGTGT     0      0.2
+    ## 37      TCCCAGCAGTAAGCAACAATGG     CCATATCCGACCCTGTGTCTGT     0      0.2
+    ## 38      TCCCAGCAGTAAGCAACAATGG  TGAAATCTACCATATCCGACCCTGT     0      0.2
+    ## 39      TCCCAGCAGTAAGCAACAATGG    CTACCATATCCGACCCTGTGTCT     0      0.2
+    ## 40      TCCCAGCAGTAAGCAACAATGG TGAAATCTACCATATCCGACCCTGTG     0      0.2
+    ## 41      TCCCAGCAGTAAGCAACAATGG     ACCATATCCGACCCTGTGTCTG     0      0.2
+    ## 42      TCCCAGCAGTAAGCAACAATGG   CGACCCTGTGTCTGTTGCATTTTC     0      0.2
+    ## 43      TCCCAGCAGTAAGCAACAATGG ACAATAGCCTGTACATAAAACCAGCC     0      0.2
+    ## 44     CCAACGACGCAGAGAAACACAAG      GCTCGTCGGGCTGGTAAATGT     0      0.2
+    ## 45     CCAACGACGCAGAGAAACACAAG       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 46     CCAACGACGCAGAGAAACACAAG CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 47     CCAACGACGCAGAGAAACACAAG        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 48       GCTTTGAGGATCCAACACGGC     GCAGTGAAGTGTTCAGTTCCGT     0      0.2
+    ## 49       GCTTTGAGGATCCAACACGGC     GTGTTCAGTTCCGTGCACAGAT     0      0.2
+    ## 50       GCTTTGAGGATCCAACACGGC    GCAGTGAAGTGTTCAGTTCCGTG     0      0.2
+    ## 51       GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 52       GCTTTGAGGATCCAACACGGC      AGTGTTCAGTTCCGTGCACAG     0      0.2
+    ## 53       GCTTTGAGGATCCAACACGGC     AGTGAAGTGTTCAGTTCCGTGC     0      0.2
+    ## 54       GCTTTGAGGATCCAACACGGC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 55       GCTTTGAGGATCCAACACGGC      GTGTTCAGTTCCGTGCACAGA     0      0.2
+    ## 56       GCTTTGAGGATCCAACACGGC     GTGAAGTGTTCAGTTCCGTGCA     0      0.2
+    ## 57       GCTTTGAGGATCCAACACGGC     GAAGTGTTCAGTTCCGTGCACA     0      0.2
+    ## 58      TGTGCACGGAACTGAACACTTC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 59      TGTGCACGGAACTGAACACTTC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 60           TCGTGCTGCAACCGAGC   ATGTCTTGCAATGTTGCCTTAGGT     0      0.2
+    ## 61           TCGTGCTGCAACCGAGC  GTTGCCTTAGGTCCATGCATACTTA     0      0.2
+    ## 62           TCGTGCTGCAACCGAGC GTTGCCTTAGGTCCATGCATACTTAA     0      0.2
+    ## 63       CAGGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 64         GGAAMGACTCCAACGACGC CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 65          CCCCCCCGCCAACTACTA     GTGCAGCATCCTTTTGACAGGT     0      0.2
+    ## 66          CCCCCCCGCCAACTACTA   CCTTATTTTCAGCYGGTGCAGCAT     0      0.2
+    ## 67          CCCCCCCGCCAACTACTA         TTTCAGCYGGTGCAGCAT     0      0.2
+    ## 68          CCCCCCCGCCAACTACTA  GTGCAGCATCCTTTTGACAGGTAAT     0      0.2
+    ## 69          CCCCCCCGCCAACTACTA  CCTTATTTTCAGCYGGTGCAGCATC     0      0.2
+    ## 70          CCCCCCCGCCAACTACTA    TCCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 71          CCCCCCCGCCAACTACTA     CCTTATTTTCAGCYGGTGCAGC     0      0.2
+    ## 72          CCCCCCCGCCAACTACTA    GTGCAGCATCCTTTTGACAGGTA     0      0.2
+    ## 73          CCCCCCCGCCAACTACTA GTGCAGCATCCTTTTGACAGGTAATA     0      0.2
+    ## 74          CCCCCCCGCCAACTACTA CAGCATCCTTTTGACAGGTAATAGCA     0      0.2
+    ## 75          CCCCCCCGCCAACTACTA    CCTTATTTTCAGCYGGTGCAGCA     0      0.2
+    ## 76          CCCCCCCGCCAACTACTA          TTTCAGCYGGTGCAGCA     0      0.2
+    ## 77          CCCCCCCGCCAACTACTA   GTGCAGCATCCTTTTGACAGGTAA     0      0.2
+    ## 78      TGATCTGTGCACGGAACTGAAC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 79      TGATCTGTGCACGGAACTGAAC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 80   ACCTAAGGCAACATTGCAAGACATT CATACACAACATTGTGTGACGTTGTG     0      0.2
+    ## 81   ACCTAAGGCAACATTGCAAGACATT       GCTCGTCGGGCTGGTAAATG     0      0.2
+    ## 82   ACCTAAGGCAACATTGCAAGACATT CGCTTAATTGCTCGTGACATAGAAGG     0      0.2
+    ## 83   ACCTAAGGCAACATTGCAAGACATT        GGCTCGTCGGGCTGGTAAA     0      0.2
+    ## 84        CGGCGACCCTACAAGCTACC     CATTTATGGCATGCAGCATGCG     0      0.2
+    ## 85        CGGCGACCCTACAAGCTACC     ACATTTATGGCATGCAGCATGC     0      0.2
+    ## 86    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGGAACACCAAAGTT     0      0.2
+    ## 87    TCTCCTGTACCTGGGCAATATGAT        GGGGGGGGAACACCAAAGT     0      0.2
+    ## 88    TCTCCTGTACCTGGGCAATATGAT          AGTAGTTGGCGGGGGGG     0      0.2
+    ## 89    TCTCCTGTACCTGGGCAATATGAT      CAAACTAGTAGTTGGCGGGGG     0      0.2
+    ## 90    TCTCCTGTACCTGGGCAATATGAT      CCAAACTAGTAGTTGGCGGGG     0      0.2
+    ## 91    TCTCCTGTACCTGGGCAATATGAT         GGGGGGGGAACACCAAAG     0      0.2
+    ## 92    TCTCCTGTACCTGGGCAATATGAT       GGGGGGGAACACCAAAGTTC     0      0.2
+    ## 93    TCTCCTGTACCTGGGCAATATGAT          CGGGGGGGGAACACCAA     0      0.2
+    ## 94    TCTCCTGTACCTGGGCAATATGAT         CGGGGGGGGAACACCAAA     0      0.2
+    ## 95   GCATGCTGCATGCCATAAATGTATA      GCACCGCAGGCACCTTATTAA     0      0.2
+    ## 96       TGCCGCCACGTCTAATGTTTC GCACAGCCCAAAATACATAACTGTGT     0      0.2
+    ## 97       TGCCGCCACGTCTAATGTTTC  GGCACAGCCCAAAATACATAACTGT     0      0.2
+    ## 98       TGCCGCCACGTCTAATGTTTC GCCCAAAATACATAACTGTGTCTGCT     0      0.2
+    ## 99       TGCCGCCACGTCTAATGTTTC   GGGCACAGCCCAAAATACATAACT     0      0.2
+    ## 100      TGCCGCCACGTCTAATGTTTC GGCACAGCCCAAAATACATAACTGTG     0      0.2
+    ##     products similar_signatures        missing_signatures enzyme digest_score
+    ## 1          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 2          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 3          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 4          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 5          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 6          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 7          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 8          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 9          0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 10         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 11         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 12         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 13         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 14         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 15         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 16         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 17         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 18         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 19         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 20         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 21         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 22         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 23         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 24         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 25         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 26         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 27         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 28         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 29         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 30         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 31         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 32         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 33         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 34         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 35         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 36         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 37         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 38         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 39         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 40         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 41         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 42         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 43         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 44         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 45         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 46         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 47         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 48         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 49         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 50         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 51         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 52         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 53         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 54         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 55         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 56         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 57         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 58         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 59         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 60         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 61         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 62         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 63         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 64         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 65         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 66         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 67         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 68         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 69         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 70         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 71         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 72         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 73         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 74         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 75         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 76         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 77         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 78         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 79         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 80         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 81         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 82         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 83         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 84         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 85         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 86         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 87         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 88         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 89         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 90         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 91         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 92         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 93         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 94         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 95         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 96         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 97         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 98         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 99         0                    HPV16, HPV11, HPV4, HPV17                   0
+    ## 100        0                    HPV16, HPV11, HPV4, HPV17                   0
+    ##     fragments
+    ## 1           0
+    ## 2           0
+    ## 3           0
+    ## 4           0
+    ## 5           0
+    ## 6           0
+    ## 7           0
+    ## 8           0
+    ## 9           0
+    ## 10          0
+    ## 11          0
+    ## 12          0
+    ## 13          0
+    ## 14          0
+    ## 15          0
+    ## 16          0
+    ## 17          0
+    ## 18          0
+    ## 19          0
+    ## 20          0
+    ## 21          0
+    ## 22          0
+    ## 23          0
+    ## 24          0
+    ## 25          0
+    ## 26          0
+    ## 27          0
+    ## 28          0
+    ## 29          0
+    ## 30          0
+    ## 31          0
+    ## 32          0
+    ## 33          0
+    ## 34          0
+    ## 35          0
+    ## 36          0
+    ## 37          0
+    ## 38          0
+    ## 39          0
+    ## 40          0
+    ## 41          0
+    ## 42          0
+    ## 43          0
+    ## 44          0
+    ## 45          0
+    ## 46          0
+    ## 47          0
+    ## 48          0
+    ## 49          0
+    ## 50          0
+    ## 51          0
+    ## 52          0
+    ## 53          0
+    ## 54          0
+    ## 55          0
+    ## 56          0
+    ## 57          0
+    ## 58          0
+    ## 59          0
+    ## 60          0
+    ## 61          0
+    ## 62          0
+    ## 63          0
+    ## 64          0
+    ## 65          0
+    ## 66          0
+    ## 67          0
+    ## 68          0
+    ## 69          0
+    ## 70          0
+    ## 71          0
+    ## 72          0
+    ## 73          0
+    ## 74          0
+    ## 75          0
+    ## 76          0
+    ## 77          0
+    ## 78          0
+    ## 79          0
+    ## 80          0
+    ## 81          0
+    ## 82          0
+    ## 83          0
+    ## 84          0
+    ## 85          0
+    ## 86          0
+    ## 87          0
+    ## 88          0
+    ## 89          0
+    ## 90          0
+    ## 91          0
+    ## 92          0
+    ## 93          0
+    ## 94          0
+    ## 95          0
+    ## 96          0
+    ## 97          0
+    ## 98          0
+    ## 99          0
+    ## 100         0
+
+``` r
 # TYPE <- 'length'
 # LEVELS <- 2
 # MIN_SIZE <- 200
@@ -710,21 +3792,6 @@ DesignSignatures(
 # TYPE <- 'melt'
 # MIN_SIZE <- 55
 # MAX_SIZE <- 400
-# 
-# data(RESTRICTION_ENZYMES) 
-# LEVELS <- 10
-# RESOLUTION <- seq(75, 100, 0.25)
-# ENZYMES <- RESTRICTION_ENZYMES["MslI"]
-# 
-# primers <- DesignSignatures(
-#   dbConn,
-#   type=TYPE,
-#   minProductSize=MIN_SIZE,
-#   maxProductSize=MAX_SIZE,
-#   resolution=RESOLUTION,
-#   levels=LEVELS,
-#   enzymes=ENZYMES
-# )
 ```
 
 ## Anal Isolates
