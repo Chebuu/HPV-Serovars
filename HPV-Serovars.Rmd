@@ -67,7 +67,7 @@ vignette('Installing-OligoArrayAux', package = 'Design_Group_Specific_Primers')
 ```
 
 # Introduction
-The first infectious cause of cancer was identified in 1911 by Peyton Rous who demonstrated the transmissibility of a tumor in fowl through injection of sub 0.2 micron filtrate of the tumor @Rous_1911.
+The first infectious cause of cancer was identified in 1911 by Peyton Rous who demonstrated the transmissibility of a tumor in fowl through injection of sub 0.2 micron filtrate of the tumor \cite{Rous_1911}.
 
 ```{r biocs, eval=F, error=F, warning=F, message=F}
 if (!requireNamespace("BiocManager", quietly = T))
