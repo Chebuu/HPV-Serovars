@@ -41,22 +41,6 @@ output: rticles::plos_article
     Physical Sciences section); this heading is implied in the first
     paragraphs.
 
-``` r
-if (!requireNamespace("BiocManager", quietly = T))
-  install.packages("BiocManager")
-BiocManager::install("Biostrings")
-BiocManager::install("DECIPHER")
-```
-
-``` r
-library(Biostrings)
-library(DECIPHER)
-```
-
-``` r
-browseVignettes("DECIPHER")
-```
-
 #### Installing OligAarrayAux
 
 Download
@@ -78,6 +62,26 @@ vignette('Installing-OligoArrayAux', package = 'Design_Group_Specific_Primers')
 The first infectious cause of cancer was identified in 1911 by Peyton
 Rous who demonstrated the transmissibility of a tumor in fowl through
 injection of sub 0.2 micron filtrate of the tumor Rous (1911).
+
+``` r
+if (!requireNamespace("BiocManager", quietly = T))
+  install.packages("BiocManager")
+BiocManager::install("Biostrings")
+BiocManager::install("DECIPHER")
+```
+
+``` r
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+library(Biostrings)
+library(DECIPHER)
+```
+
+``` r
+browseVignettes("DECIPHER")
+```
 
 # Data
 
@@ -129,54 +133,6 @@ aligned and loaded in SQLite (RAM) along with annotations from GenBank
 that describe the serotype of each isolate.
 
 ``` r
-library(dplyr)
-```
-
-    ## 
-    ## Attaching package: 'dplyr'
-
-    ## The following objects are masked from 'package:Biostrings':
-    ## 
-    ##     collapse, intersect, setdiff, setequal, union
-
-    ## The following object is masked from 'package:XVector':
-    ## 
-    ##     slice
-
-    ## The following objects are masked from 'package:IRanges':
-    ## 
-    ##     collapse, desc, intersect, setdiff, slice, union
-
-    ## The following objects are masked from 'package:S4Vectors':
-    ## 
-    ##     first, intersect, rename, setdiff, setequal, union
-
-    ## The following objects are masked from 'package:BiocGenerics':
-    ## 
-    ##     combine, intersect, setdiff, union
-
-    ## The following objects are masked from 'package:stats':
-    ## 
-    ##     filter, lag
-
-    ## The following objects are masked from 'package:base':
-    ## 
-    ##     intersect, setdiff, setequal, union
-
-``` r
-library(tidyr)
-```
-
-    ## 
-    ## Attaching package: 'tidyr'
-
-    ## The following object is masked from 'package:S4Vectors':
-    ## 
-    ##     expand
-
-``` r
-library(stringr)
-
 doAlignment <- function(xset) {
     useqs <- unique(xset)
     uidxs <- match(xset, useqs)
@@ -208,7 +164,7 @@ Seqs2DB(Oral.L1.seqs, 'XStringSet', dbConn, '')
     ## Adding 31 sequences to the database.
     ## 
     ## 31 total sequences in table Seqs.
-    ## Time difference of 0.09 secs
+    ## Time difference of 0.11 secs
 
 ``` r
 Add2DB(Oral.L1.vars %>% mutate(identifier = SVAR), dbConn)
@@ -278,7 +234,7 @@ tiles.L1 <- TileSeqs(
 
     ## ================================================================================
     ## 
-    ## Time difference of 7 secs
+    ## Time difference of 7.29 secs
 
 ``` r
 print(
@@ -287,12 +243,12 @@ print(
 ```
 
     ##   misprime                   target_site
-    ## 1     TRUE       CACCTCCAGGATCGTGCCCTCCG
-    ## 2    FALSE TGGGATAAAGCACCTGTTTGTGCATCAGA
-    ## 3    FALSE TGCATCAGAGGAAAATAACCAGACAGGAC
-    ## 4    FALSE        GACTCCAACGACGCAGAGAAAC
-    ## 5    FALSE GTTACTTTACCAGATCCTAATAAATTTGC
-    ## 6    FALSE ACCAGTACAGGGTGTTACGAGTTACCCTA
+    ## 1     TRUE AAGCAGACACAGTTATGTATTTTGGGCTG
+    ## 2    FALSE GGTGCTACTGGTCATCCATATTTTAATAG
+    ## 3    FALSE CCCATTGGTGAGCATTGGGCCAAGGGCAC
+    ## 4    FALSE       TCATGCTGGTCAGCCTGGTGAGT
+    ## 5    FALSE AAATGCTAGTGCTTATGCAGCAAATGCAG
+    ## 6    FALSE GAAAGACTCCAACGACGCAGAGAAACACA
 
 ``` r
 oligos.L1 <- DesignPrimers(
@@ -311,7 +267,7 @@ oligos.L1 <- DesignPrimers(
     ## HPV16 (7 candidate primers):
     ## ================================================================================
     ## 
-    ## Time difference of 5.5 secs
+    ## Time difference of 5.9 secs
 
 ``` r
 head(oligos.L1)
@@ -423,12 +379,12 @@ head(oligos.L1)
     ## 237                HPV17 (0.0426%) 
     ## 238                  HPV17 (0.11%)
 
-Plot hybridization curves for each primer pair (5) in each primer set
-(7). Honestly, I don’t really understand the dimension of the dataframe
-output by `DECIPHER::DesignPimers`. If I remember correctly, it’s a 7x17
-matrix where each cell holds a list of 5 oligos. Unfortunately, I can’t
-print the matrix to stdout, which makes debugging slow, so I’ll just
-deal with this issue later I guess.
+Plot hybridization curves for the reverse compliment of each primer pair
+(5) in each primer set (7). Honestly, I don’t really understand the
+dimension of the dataframe output by `DECIPHER::DesignPimers`. If I
+remember correctly, it’s a 7x17 matrix where each cell holds a list of 5
+oligos. Unfortunately, I can’t print the matrix to stdout, which makes
+debugging slow, so I’ll just deal with this issue later I guess.
 
 ``` r
 plotMeltCurves <- function(temps, effs) {
@@ -474,279 +430,13 @@ for (i in 1:nsets)
           oligos.L1$reverse_primer[i,j]
         ) %>% meltCurves
       },
-      error = function(e)
-        # ¿ --- It's supposed to be 7o x 17p --- ?
-        warning(sprintf('%s [iteration i=%s j=%s]', e, i, j))
+      error = function(e) NULL
+        # # ¿ --- It's supposed to be 7o x 17p --- ?
+        # warning(sprintf('%s [iteration i=%s j=%s]', e, i, j))
     )
 ```
 
-![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-1.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-2.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-3.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-4.png)<!-- -->
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=6]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=7]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=8]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=9]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=10]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=11]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=12]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=13]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=14]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=15]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=16]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=1 j=17]
-
-![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-5.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-6.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-7.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-8.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-9.png)<!-- -->
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=6]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=7]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=8]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=9]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=10]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=11]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=12]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=13]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=14]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=15]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=16]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=2 j=17]
-
-![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-10.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-11.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-12.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-13.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-14.png)<!-- -->
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=6]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=7]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=8]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=9]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=10]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=11]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=12]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=13]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=14]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=15]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=16]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=3 j=17]
-
-![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-15.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-16.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-17.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-18.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-19.png)<!-- -->
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=6]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=7]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=8]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=9]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=10]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=11]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=12]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=13]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=14]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=15]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=16]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=4 j=17]
-
-![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-20.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-21.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-22.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-23.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-24.png)<!-- -->
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=6]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=7]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=8]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=9]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=10]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=11]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=12]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=13]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=14]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=15]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=16]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=5 j=17]
-
-![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-25.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-26.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-27.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-28.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-29.png)<!-- -->
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=6]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=7]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=8]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=9]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=10]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=11]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=12]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=13]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=14]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=15]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=16]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=6 j=17]
-
-![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-30.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-31.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-32.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-33.png)<!-- -->![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-34.png)<!-- -->
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=6]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=7]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=8]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=9]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=10]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=11]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=12]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=13]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=14]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=15]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=16]
-
-    ## Warning in value[[3L]](cond): Error in oligos.L1$forward_primer[i, j]: subscript out of bounds
-    ##  [iteration i=7 j=17]
-
-![](In-silico-Simulation-of-PCR-Diagnostics-for-the-Descimination-of-HPV-Serovars_files/figure-gfm/melt_curves-35.png)<!-- -->
+![](HPV-Serovars_files/figure-gfm/melt_curves-1.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-2.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-3.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-4.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-5.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-6.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-7.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-8.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-9.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-10.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-11.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-12.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-13.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-14.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-15.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-16.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-17.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-18.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-19.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-20.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-21.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-22.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-23.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-24.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-25.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-26.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-27.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-28.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-29.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-30.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-31.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-32.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-33.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-34.png)<!-- -->![](HPV-Serovars_files/figure-gfm/melt_curves-35.png)<!-- -->
 
 Some more primer designs (RFLP, sequencing, etc.):
 
@@ -776,32 +466,32 @@ DesignSignatures(
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
     ## 
-    ## Time difference of 0.39 secs
+    ## Time difference of 0.41 secs
     ## 
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
     ## 
-    ## Time difference of 60.61 secs
+    ## Time difference of 59.77 secs
     ## 
     ## Selecting the most common primer sequences:
     ## ================================================================================
     ## 
-    ## Time difference of 13.63 secs
+    ## Time difference of 13.69 secs
     ## 
     ## Determining PCR products from each group:
     ## ================================================================================
     ## 
-    ## Time difference of 2.78 secs
+    ## Time difference of 2.8 secs
     ## 
     ## Scoring primer pair combinations:
     ## ================================================================================
     ## 
-    ## Time difference of 0.01 secs
+    ## Time difference of 0 secs
     ## 
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
     ## 
-    ## Time difference of 1.57 secs
+    ## Time difference of 1.55 secs
 
     ##                forward_primer            reverse_primer score coverage products
     ## 1      CCAACGACGCAGAGAAACACAA  ATGTCTTGCAATGTTGCCTTAGGT     0      0.2        0

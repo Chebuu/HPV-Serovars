@@ -52,22 +52,6 @@ paragraphs.
 knitr::opts_chunk$set(echo = T)
 ```
 
-```{r biocs, eval=F, error=F, warning=F, message=F}
-if (!requireNamespace("BiocManager", quietly = T))
-  install.packages("BiocManager")
-BiocManager::install("Biostrings")
-BiocManager::install("DECIPHER")
-```
-
-```{r packs, eval=T, error=F, warning=F, message=F}
-library(Biostrings)
-library(DECIPHER)
-```
-
-```{r vignette, eval=F}
-browseVignettes("DECIPHER")
-```
-
 #### Installing OligAarrayAux
 
 Download [OligoArrayAux](http://unafold.rna.albany.edu/?q=DINAMelt/OligoArrayAux) and see the following vignette for installation instructions.
@@ -84,6 +68,26 @@ vignette('Installing-OligoArrayAux', package = 'Design_Group_Specific_Primers')
 
 # Introduction
 The first infectious cause of cancer was identified in 1911 by Peyton Rous who demonstrated the transmissibility of a tumor in fowl through injection of sub 0.2 micron filtrate of the tumor @Rous_1911.
+
+```{r biocs, eval=F, error=F, warning=F, message=F}
+if (!requireNamespace("BiocManager", quietly = T))
+  install.packages("BiocManager")
+BiocManager::install("Biostrings")
+BiocManager::install("DECIPHER")
+```
+
+```{r packs, eval=T, error=F, warning=F, message=F}
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+library(Biostrings)
+library(DECIPHER)
+```
+
+```{r vignette, eval=F}
+browseVignettes("DECIPHER")
+```
 
 # Data
 I included GenBank queries for all the HPV DNA in this repo. If you want to run them just paste in the search bar at: [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore) 
@@ -120,11 +124,8 @@ https://www.ncbi.nlm.nih.gov/nuccore
 
 ### L1 gene
 A collection of *l1* DNA sequences (avg. ~600bp) from various oral isolates of HPV (Extracted from results of GenBank query above) are aligned and loaded in SQLite (RAM) along with annotations from GenBank that describe the serotype of each isolate.
-```{r oral_L1}
-library(dplyr)
-library(tidyr)
-library(stringr)
 
+```{r oral_L1}
 doAlignment <- function(xset) {
     useqs <- unique(xset)
     uidxs <- match(xset, useqs)
@@ -173,7 +174,7 @@ oligos.L1 <- DesignPrimers(
 head(oligos.L1)
 ```
 
-Plot hybridization curves for each primer pair (5) in each primer set (7). Honestly, I don't really understand the dimension of the dataframe output by `DECIPHER::DesignPimers`. If I remember correctly, it's a 7x17 matrix where each cell holds a list of 5 oligos. Unfortunately, I can't print the matrix to stdout, which makes debugging slow, so I'll just deal with this issue later I guess.
+Plot hybridization curves for the reverse compliment of each primer pair (5) in each primer set (7). Honestly, I don't really understand the dimension of the dataframe output by `DECIPHER::DesignPimers`. If I remember correctly, it's a 7x17 matrix where each cell holds a list of 5 oligos. Unfortunately, I can't print the matrix to stdout, which makes debugging slow, so I'll just deal with this issue later I guess.
 
 ```{r melt_curves, include=T}
 plotMeltCurves <- function(temps, effs) {
@@ -219,9 +220,9 @@ for (i in 1:nsets)
           oligos.L1$reverse_primer[i,j]
         ) %>% meltCurves
       },
-      error = function(e)
-        # ¿ --- It's supposed to be 7o x 17p --- ?
-        warning(sprintf('%s [iteration i=%s j=%s]', e, i, j))
+      error = function(e) NULL
+        # # ¿ --- It's supposed to be 7o x 17p --- ?
+        # warning(sprintf('%s [iteration i=%s j=%s]', e, i, j))
     )
 
 ```
