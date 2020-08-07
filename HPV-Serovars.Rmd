@@ -1,56 +1,27 @@
 ---
-title: Simulating PCR Diagnostics to Discriminate HPV Serotypes by DNA Sequence
+title: Designing PCR Diagnostics that Discriminate HPV Serotypes by DNA Sequence
+author: chebuu
 bibliography: citations.bib
-output: github_document
+output: pdf_document
 ---
 
-`---`
-```{}
-title: Title of submission to PLOS journal
-author:
-  - name: Alice Anonymous
-    email: alice@example.com
-    affiliation: Some Institute of Technology
-    corresponding: alice@example.com
-  - name: Bob Security
-    email: bob@example.com
-    affiliation: Another University
-address:
-  - code: Some Institute of Technology
-    address: Department, Street, City, State, Zip
-  - code: Another University
-    address: Department, Street, City, State, Zip
-abstract: |
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-  
-author_summary: |
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-bibliography: citations.bib
-includes:
-  in_header: 
-    - preamble.tex
-    - common.tex
-output: rticles::plos_article
-```
-`---`
 
-```
-This PNAS journal template is provided to help you write your work in the
-correct journal format. Instructions for use are provided below.
+<!-- --- -->
+<!-- ... -->
+<!-- includes: -->
+<!--   in_header:  -->
+<!--     - preamble.tex -->
+<!--     - common.tex -->
+<!-- ... -->
+<!-- --- -->
 
-Note: please start your introduction WITHOUT including the word
-"Introduction" as a section heading (except for math articles in the
-Physical Sciences section); this heading is implied in the first
-paragraphs.
-```
 
 ```{r setup, include=F}
-# https://bioconductor.org/packages/release/bioc/html/twoddpcr.html
-# https://bioconductor.org/packages/release/bioc/html/ddCt.html
-# https://bioconductor.org/packages/3.5/bioc/html/mBPCR.html
-
 knitr::opts_chunk$set(echo = T)
 ```
+
+# Introduction
+The first infectious cause of cancer was identified in 1911 by Peyton Rous who demonstrated the transmissibility of a tumor in fowl through injection of sub 0.2 micron filtrate of the tumor \cite{Rous_1911}.
 
 #### Installing OligAarrayAux
 
@@ -66,15 +37,31 @@ library(Design_Group_Specific_Primers)
 vignette('Installing-OligoArrayAux', package = 'Design_Group_Specific_Primers')
 ```
 
-# Introduction
-The first infectious cause of cancer was identified in 1911 by Peyton Rous who demonstrated the transmissibility of a tumor in fowl through injection of sub 0.2 micron filtrate of the tumor \cite{Rous_1911}.
-
+### Install Bioconductor packages
 ```{r biocs, eval=F, error=F, warning=F, message=F}
+# Install from Bioconductor
 if (!requireNamespace("BiocManager", quietly = T))
   install.packages("BiocManager")
 BiocManager::install("Biostrings")
 BiocManager::install("DECIPHER")
+
+# Open Biostrings vignettes
+library(Biostrings)
+browseVignettes("Biostrings")
+
+# Open DECIPHER docs and vignettes
+library(DECIPHER)
+help("DECIPHER")
+browseVignettes("DECIPHER")
 ```
+
+```{}
+# https://bioconductor.org/packages/release/bioc/html/twoddpcr.html
+# https://bioconductor.org/packages/release/bioc/html/ddCt.html
+# https://bioconductor.org/packages/3.5/bioc/html/mBPCR.html
+```
+
+# Data
 
 ```{r packs, eval=T, error=F, warning=F, message=F}
 library(dplyr)
@@ -85,11 +72,6 @@ library(Biostrings)
 library(DECIPHER)
 ```
 
-```{r vignette, eval=F}
-browseVignettes("DECIPHER")
-```
-
-# Data
 I included GenBank queries for all the HPV DNA in this repo. If you want to run them just paste in the search bar at: [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore) 
 
 ## All HPV
@@ -146,7 +128,7 @@ Add2DB(Oral.L1.vars %>% mutate(identifier = SVAR), dbConn)
 dbGetQuery(dbConn, "select * from Seqs") %>% head(4)
 ```
 
-Design HPV16-specific F/W primers using `DECIPHER` utilities.
+Design HPV16-specific F/R primers using `DECIPHER` utilities.
 
 ```{r oral_l1_olg, include=T}
 tiles.L1 <- TileSeqs(
@@ -316,7 +298,7 @@ AND Anal[All Fields]
 AND "Complete Genome"[All Fields]
 ```
 
-```{r disconnect}
+```{r disconnect, eval=F}
 tryCatch({dbDisconnect(dbconn)}, error=warning)
 tryCatch({dbDisconnect(dbConn)}, error=warning)
 ```

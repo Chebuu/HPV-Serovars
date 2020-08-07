@@ -1,3 +1,35 @@
+---
+title: Simulating PCR Diagnostics that Discriminate HPV Serotypes by DNA Sequence
+author:
+  - name: Чебурашка
+    affiliation: Не аффилированный
+    address:
+    - Продуктовый магазин
+    - Москва, Союз Советских Социалистических Республик
+    email:  chebuu@host.com
+  - name: Гена Крокодил
+    affiliation: Не аффилированный
+    address:
+    - Зоопарк
+    - Москва, Союз Советских Социалистических Республи
+    email:  gena@host.com
+abstract: >
+  Чебурашка жил в густом тропическом лесу, пока однажды он не пересек океан, а то и два, в коробке с апельсинами и оказался в большом городе: он залез внутрь коробки, чтобы позавтракать, но, съев два фрукта, он почувствовал усталость и заснул. Он не заметил, как ящики были заколочены и погружены на корабль, направляющийся в Россию.
+preamble: |
+  %
+bibliography: citations.bib
+output: rticles::rjournal_article
+---
+
+
+<!-- --- -->
+<!-- ... -->
+<!-- includes: -->
+<!--   in_header:  -->
+<!--     - preamble.tex -->
+<!--     - common.tex -->
+<!-- ... -->
+<!-- --- -->
 
 <!-- Guide to using this template {.unnumbered} -->
 <!-- ======================================== -->
