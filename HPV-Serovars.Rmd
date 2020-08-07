@@ -1,0 +1,308 @@
+---
+title: Simulating PCR Diagnostics to Discriminate HPV Serotypes by DNA Sequence
+bibliography: citations.bib
+output: github_document
+---
+
+`---`
+```{yaml}
+title: Title of submission to PLOS journal
+author:
+  - name: Alice Anonymous
+    email: alice@example.com
+    affiliation: Some Institute of Technology
+    corresponding: alice@example.com
+  - name: Bob Security
+    email: bob@example.com
+    affiliation: Another University
+address:
+  - code: Some Institute of Technology
+    address: Department, Street, City, State, Zip
+  - code: Another University
+    address: Department, Street, City, State, Zip
+abstract: |
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+  
+author_summary: |
+  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+bibliography: citations.bib
+includes:
+  in_header: 
+    - preamble.tex
+    - common.tex
+output: rticles::plos_article
+```
+`---`
+
+```
+This PNAS journal template is provided to help you write your work in the
+correct journal format. Instructions for use are provided below.
+
+Note: please start your introduction WITHOUT including the word
+"Introduction" as a section heading (except for math articles in the
+Physical Sciences section); this heading is implied in the first
+paragraphs.
+```
+
+```{r setup, include=F}
+# https://bioconductor.org/packages/release/bioc/html/twoddpcr.html
+# https://bioconductor.org/packages/release/bioc/html/ddCt.html
+# https://bioconductor.org/packages/3.5/bioc/html/mBPCR.html
+
+knitr::opts_chunk$set(echo = T)
+```
+
+```{r biocs, eval=F, error=F, warning=F, message=F}
+if (!requireNamespace("BiocManager", quietly = T))
+  install.packages("BiocManager")
+BiocManager::install("Biostrings")
+BiocManager::install("DECIPHER")
+```
+
+```{r packs, eval=T, error=F, warning=F, message=F}
+library(Biostrings)
+library(DECIPHER)
+```
+
+```{r vignette, eval=F}
+browseVignettes("DECIPHER")
+```
+
+#### Installing OligAarrayAux
+
+Download [OligoArrayAux](http://unafold.rna.albany.edu/?q=DINAMelt/OligoArrayAux) and see the following vignette for installation instructions.
+
+```{r oaux, eval=F}
+library(devtools)
+
+devtools::install_github('chebuu/Design-Group-Specific-Primers')
+
+library(Design_Group_Specific_Primers)
+
+vignette('Installing-OligoArrayAux', package = 'Design_Group_Specific_Primers')
+```
+
+# Introduction
+The first infectious cause of cancer was identified in 1911 by Peyton Rous who demonstrated the transmissibility of a tumor in fowl through injection of sub 0.2 micron filtrate of the tumor @Rous_1911.
+
+# Data
+I included GenBank queries for all the HPV DNA in this repo. If you want to run them just paste in the search bar at: [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore) 
+
+## All HPV
+[https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore)
+```{sql, eval=F}
+ "Human papillomavirus"[Primary Organism] 
+ AND viruses[filter] 
+ NOT Polyamides[All Fields] 
+ NOT Method[All Fields] 
+ NOT Patent[All Fields]
+```
+
+## Complete Genomes
+[https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore)
+```{sql, eval=F}
+"Human papillomavirus"[Primary Organism] 
+AND "complete genome"[All Fields]
+NOT Isolate[Title] 
+```
+
+## Oral Isolates
+[https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore)
+```{sql, eval=F}
+https://www.ncbi.nlm.nih.gov/nuccore
+     "Human papillomavirus"[Primary Organism] 
+ AND viruses[filter] 
+ NOT Polyamides[All Fields] 
+ NOT Method[All Fields] 
+ NOT Patent[All Fields] 
+ AND Oral[All Fields] 
+```
+
+### L1 gene
+A collection of *l1* DNA sequences (avg. ~600bp) from various oral isolates of HPV (Extracted from results of GenBank query above) are aligned and loaded in SQLite (RAM) along with annotations from GenBank that describe the serotype of each isolate.
+```{r oral_L1}
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+doAlignment <- function(xset) {
+    useqs <- unique(xset)
+    uidxs <- match(xset, useqs)
+    aseqs <- AlignSeqs(useqs, verbose=F) 
+    aseqs[uidxs]
+}
+
+dbConn <- dbConnect(SQLite(), ':memory:')
+
+Oral.L1.seqs <- readDNAStringSet('HPV.oral.L1.fasta') %>% doAlignment
+Oral.L1.vars <- read.csv('HPV.oral.L1.csv', stringsAsFactors = F)
+
+head(Oral.L1.seqs)
+
+Seqs2DB(Oral.L1.seqs, 'XStringSet', dbConn, '')
+Add2DB(Oral.L1.vars %>% mutate(identifier = SVAR), dbConn)
+
+dbGetQuery(dbConn, "select * from Seqs") %>% head(4)
+```
+
+Design HPV16-specific F/W primers using `DECIPHER` utilities.
+
+```{r oral_l1_olg, include=T}
+tiles.L1 <- TileSeqs(
+  dbFile = dbConn,
+  minLength = 18,
+  maxLength = 29,
+  minCoverage = 0.8
+)
+
+print(
+  tiles.L1[,c(6,11)] %>% sample_n(6)
+)
+
+oligos.L1 <- DesignPrimers(
+  tiles = tiles.L1,
+  identifier = 'HPV16',
+  worstScore = -1E3,
+  maxPermutations = 5,
+  minGroupCoverage = 0.85,
+  minCoverage = 0.85,
+  minLength = 20,
+  maxLength = 28
+)
+
+head(oligos.L1)
+```
+
+Plot hybridization curves for each primer pair (5) in each primer set (7). Honestly, I don't really understand the dimension of the dataframe output by `DECIPHER::DesignPimers`. If I remember correctly, it's a 7x17 matrix where each cell holds a list of 5 oligos. Unfortunately, I can't print the matrix to stdout, which makes debugging slow, so I'll just deal with this issue later I guess.
+
+```{r melt_curves, include=T}
+plotMeltCurves <- function(temps, effs) {
+  plot(
+    temps, effs[,1], ylim=c(0,1),
+    ylab="Hybridization Efficiency",
+    xlab=expression(paste("Temperature (", degree, "C)", sep="")),
+    type="l", lwd=2, col="Blue", main="Denaturation Plot"
+  )
+  lines(temps, effs[,2], col="Red", lwd=2)
+  abline(h=0.5, lty=2, lwd=2, col="Orange")
+  abline(v=64, lty=2, lwd=2, col="Green")
+  legend(
+    "topright",
+    legend = c(
+      "Forward Primer",
+      "Reverse Primer",
+      "50% Efficiency",
+      "Annealing Temperature"
+    ),
+    col = c("Blue", "Red", "Orange", "Green"),
+    lwd = c(2, 2, 2, 2), lty = c(1, 1, 2, 2)
+  )
+}
+
+meltCurves <- 
+  function(primers, target=reverseComplement(DNAStringSet(primers)), temps=60:75, P=4e-7, ions=.225, doPlot=TRUE, ...) {
+    fxn <- function(temp) CalculateEfficiencyPCR(primers, target, temp, P=P, ions=ions, ...)
+    effs <- matrix(unlist(lapply(temps, fxn)), ncol=2, byrow=TRUE)
+    if (doPlot) plotMeltCurves(temps, effs)
+    list(temps = temps, effs = effs)
+  }
+
+nsets <- nrow(oligos.L1)
+npair <- ncol(oligos.L1)
+
+for (i in 1:nsets)
+  for (j in 1:npair)
+    tryCatch(
+      {
+        c(
+          oligos.L1$forward_primer[i,j],
+          oligos.L1$reverse_primer[i,j]
+        ) %>% meltCurves
+      },
+      error = function(e)
+        # ¿ --- It's supposed to be 7o x 17p --- ?
+        warning(sprintf('%s [iteration i=%s j=%s]', e, i, j))
+    )
+
+```
+
+Some more primer designs (RFLP, sequencing, etc.):
+
+```{r oral_l1_seq, include=T}
+TYPE <- 'sequence'
+MIN_LENGTH <- 15
+MAX_LENGTH <- 25
+MIN_SIZE <- 60
+MAX_SIZE <- 100
+RESOLUTION <- 3
+LEVELS <- 2
+ENZYMES <- NULL
+
+DesignSignatures(
+  dbConn,
+  type=TYPE,
+  minLength=MIN_LENGTH,
+  maxLength=MAX_LENGTH,
+  minProductSize=MIN_SIZE,
+  maxProductSize=MAX_SIZE,
+  resolution=RESOLUTION,
+  levels=LEVELS,
+  enzymes=ENZYMES
+)
+
+# TYPE <- 'length'
+# LEVELS <- 2
+# MIN_SIZE <- 200
+# MAX_SIZE <- 1400
+# RESOLUTION <- c(
+#   seq(200, 700, 3),
+#   seq(705, 1000, 5),
+#   seq(1010, 1400, 10)
+# )
+# 
+# TYPE <- 'melt'
+# MIN_SIZE <- 55
+# MAX_SIZE <- 400
+# 
+# data(RESTRICTION_ENZYMES) 
+# LEVELS <- 10
+# RESOLUTION <- seq(75, 100, 0.25)
+# ENZYMES <- RESTRICTION_ENZYMES["MslI"]
+# 
+# primers <- DesignSignatures(
+#   dbConn,
+#   type=TYPE,
+#   minProductSize=MIN_SIZE,
+#   maxProductSize=MAX_SIZE,
+#   resolution=RESOLUTION,
+#   levels=LEVELS,
+#   enzymes=ENZYMES
+# )
+```
+
+## Anal Isolates
+[https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore)
+```{sql, eval=F}
+ "Human papillomavirus"[Primary Organism]
+ AND viruses[filter] 
+ NOT Polyamides[All Fields] 
+ NOT Method[All Fields] 
+ NOT Patent[All Fields]
+ AND Anal[All Fields]
+```
+
+## Cutaneous Isolates
+[https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore)
+```{sql, eval=F}
+"Human papillomavirus"[Primary Organism]
+NOT Polyamides[All Fields] 
+NOT Method[All Fields] 
+NOT Patent[All Fields]
+AND Anal[All Fields]
+AND "Complete Genome"[All Fields]
+```
+
+```{r disconnect}
+tryCatch({dbDisconnect(dbconn)}, error=warning)
+tryCatch({dbDisconnect(dbConn)}, error=warning)
+```
