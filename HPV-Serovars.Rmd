@@ -56,12 +56,27 @@ browseVignettes("DECIPHER")
 ```
 
 ```{}
+# https://rdrr.io/cran/dpcR/f/vignettes/overview.Rmd
+
 # https://bioconductor.org/packages/release/bioc/html/twoddpcr.html
 # https://bioconductor.org/packages/release/bioc/html/ddCt.html
 # https://bioconductor.org/packages/3.5/bioc/html/mBPCR.html
 ```
+# PaVE Data
+[https://pave.niaid.nih.gov](https://pave.niaid.nih.gov)
+```{}
+https://pave.niaid.nih.gov/#search/search_database/kw
+?dbNamespace=Genomes
+&includeNR=true
+&refCloneOnly=false
+&sort=Locus_ID
+&sortType=true
+&page=600&start=1
+&text=Human&showTable=1
+&
+```
 
-# Data
+# NCBI Data
 
 ```{r packs, eval=T, error=F, warning=F, message=F}
 library(dplyr)
