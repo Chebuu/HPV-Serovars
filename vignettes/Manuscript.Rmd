@@ -108,8 +108,6 @@ I copied the tables from [Wiki: Human_papillomavirus_infection ](https://en.wiki
 ```{r wikidata}
 data(HPV.Sequelae)
 data(HPV.GenitalCancerRisk)
-
-install.packages('dpcR')
 ```
 
 The Wiki data contains phenotypic categorizations of several HPV strains. It's useful for testing.
@@ -127,11 +125,10 @@ knitr::kable(
 )
 
 hist(unlist(HPV), max(unlist(HPV)), col='blue'); head(HPV, 4)
-HPV
 ```
 
 # PaVE Data
-eference genomes for all serovars listed in `data(HPV.Sequelae)`and `data(HPV.GenitalCancerRisk)`were selected from amoong the results of the following [PaVEPaVE](https://pave.niaid.nih.gov) query:
+Reference genomes for all serovars listed in `data(HPV.Sequelae)`and `data(HPV.GenitalCancerRisk)`were selected from among the results of the following [PaVEPaVE](https://pave.niaid.nih.gov) query:
 
 
 ```{} 
