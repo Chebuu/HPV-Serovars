@@ -55,10 +55,10 @@ to run them just paste in the search bar at:
 <https://www.ncbi.nlm.nih.gov/nuccore>
 
 ``` sql
- "Human papillomavirus"[Primary Organism] 
- AND viruses[filter] 
- NOT Polyamides[All Fields] 
- NOT Method[All Fields] 
+ "Human papillomavirus"[Primary Organism]
+ AND viruses[filter]
+ NOT Polyamides[All Fields]
+ NOT Method[All Fields]
  NOT Patent[All Fields]
 ```
 
@@ -67,9 +67,9 @@ to run them just paste in the search bar at:
 <https://www.ncbi.nlm.nih.gov/nuccore>
 
 ``` sql
-"Human papillomavirus"[Primary Organism] 
+"Human papillomavirus"[Primary Organism]
 AND "complete genome"[All Fields]
-NOT Isolate[Title] 
+NOT Isolate[Title]
 ```
 
 ## Oral Isolates
@@ -78,12 +78,12 @@ NOT Isolate[Title]
 
 ``` sql
 https://www.ncbi.nlm.nih.gov/nuccore
-     "Human papillomavirus"[Primary Organism] 
- AND viruses[filter] 
- NOT Polyamides[All Fields] 
- NOT Method[All Fields] 
- NOT Patent[All Fields] 
- AND Oral[All Fields] 
+     "Human papillomavirus"[Primary Organism]
+ AND viruses[filter]
+ NOT Polyamides[All Fields]
+ NOT Method[All Fields]
+ NOT Patent[All Fields]
+ AND Oral[All Fields]
 ```
 
 ### L1 gene
@@ -97,7 +97,7 @@ that describe the serotype of each isolate.
 doAlignment <- function(xset) {
     useqs <- unique(xset)
     uidxs <- match(xset, useqs)
-    aseqs <- AlignSeqs(useqs, verbose=F) 
+    aseqs <- AlignSeqs(useqs, verbose=F)
     aseqs[uidxs]
 }
 
@@ -110,7 +110,7 @@ print(Oral.L1.seqs)
 ```
 
     ##   A DNAStringSet instance of length 31
-    ##      width seq                                              names               
+    ##      width seq                                              names
     ##  [1]   607 -----------------------...---------------------- gi|944543704|gb|K...
     ##  [2]   607 -----------------------...---------------------- gi|944543703|gb|K...
     ##  [3]   607 -----------------------...---------------------- gi|944543701|gb|K...
@@ -128,7 +128,7 @@ Seqs2DB(Oral.L1.seqs, 'XStringSet', dbConn, '')
 ```
 
     ## Adding 31 sequences to the database.
-    ## 
+    ##
     ## 31 total sequences in table Seqs.
     ## Time difference of 0.09 secs
 
@@ -138,33 +138,33 @@ Add2DB(Oral.L1.vars %>% mutate(identifier = SVAR), dbConn)
 
     ## Expression:
     ## alter table Seqs add column GI INTEGER
-    ## 
+    ##
     ## Expression:
     ## update Seqs set GI = :GI where row_names = :row_names
-    ## 
+    ##
     ## Expression:
     ## alter table Seqs add column SVAR INTEGER
-    ## 
+    ##
     ## Expression:
     ## update Seqs set SVAR = :SVAR where row_names = :row_names
-    ## 
+    ##
     ## Expression:
     ## alter table Seqs add column ISO INTEGER
-    ## 
+    ##
     ## Expression:
     ## update Seqs set ISO = :ISO where row_names = :row_names
-    ## 
+    ##
     ## Expression:
     ## alter table Seqs add column GENE INTEGER
-    ## 
+    ##
     ## Expression:
     ## update Seqs set GENE = :GENE where row_names = :row_names
-    ## 
+    ##
     ## Expression:
     ## update Seqs set identifier = :identifier where row_names = :row_names
-    ## 
+    ##
     ## Added to table Seqs:  "GI" and "SVAR" and "ISO" and "GENE" and "identifier".
-    ## 
+    ##
     ## Time difference of 0.03 secs
 
 ``` r
@@ -199,7 +199,7 @@ tiles.L1 <- TileSeqs(
 ```
 
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 7.18 secs
 
 ``` r
@@ -229,10 +229,10 @@ oligos.L1 <- DesignPrimers(
 )
 ```
 
-    ## 
+    ##
     ## HPV16 (7 candidate primers):
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 5.9 secs
 
 ``` r
@@ -331,18 +331,18 @@ head(oligos.L1)
     ## 237          0.4444444          0.1111111          0.1111111          0.1111111
     ## 238          0.4444444          0.1111111          0.1111111          0.1111111
     ##     reverse_coverage.5                              mismatches_forward
-    ## 201          0.1111111                                                
-    ## 231          0.1111111 HPV18 (0.0986%) HPV11 (0.0393%) HPV17 (0.192%) 
-    ## 232          0.1111111                  HPV18 (0.437%) HPV17 (0.495%) 
-    ## 236          0.1111111                   HPV18 (20.5%) HPV17 (0.114%) 
-    ## 237          0.1111111                   HPV18 (1.26%) HPV17 (0.238%) 
-    ## 238          0.1111111                                                
+    ## 201          0.1111111
+    ## 231          0.1111111 HPV18 (0.0986%) HPV11 (0.0393%) HPV17 (0.192%)
+    ## 232          0.1111111                  HPV18 (0.437%) HPV17 (0.495%)
+    ## 236          0.1111111                   HPV18 (20.5%) HPV17 (0.114%)
+    ## 237          0.1111111                   HPV18 (1.26%) HPV17 (0.238%)
+    ## 238          0.1111111
     ##                  mismatches_reverse
-    ## 201                HPV17 (0.0296%) 
-    ## 231 HPV4 (0.0656%) HPV17 (0.0125%) 
-    ## 232                 HPV4 (0.0189%) 
-    ## 236                HPV17 (0.0207%) 
-    ## 237                HPV17 (0.0426%) 
+    ## 201                HPV17 (0.0296%)
+    ## 231 HPV4 (0.0656%) HPV17 (0.0125%)
+    ## 232                 HPV4 (0.0189%)
+    ## 236                HPV17 (0.0207%)
+    ## 237                HPV17 (0.0426%)
     ## 238                  HPV17 (0.11%)
 
 Plot hybridization curves for the reverse compliment of each primer pair
@@ -376,7 +376,7 @@ plotMeltCurves <- function(temps, effs) {
   )
 }
 
-meltCurves <- 
+meltCurves <-
   function(primers, target=reverseComplement(DNAStringSet(primers)), temps=60:75, P=4e-7, ions=.225, doPlot=TRUE, ...) {
     fxn <- function(temp) CalculateEfficiencyPCR(primers, target, temp, P=P, ions=ions, ...)
     effs <- matrix(unlist(lapply(temps, fxn)), ncol=2, byrow=TRUE)
@@ -431,32 +431,32 @@ DesignSignatures(
 
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.42 secs
-    ## 
+    ##
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 60.84 secs
-    ## 
+    ##
     ## Selecting the most common primer sequences:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 13.78 secs
-    ## 
+    ##
     ## Determining PCR products from each group:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 2.8 secs
-    ## 
+    ##
     ## Scoring primer pair combinations:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0 secs
-    ## 
+    ##
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.56 secs
 
     ##                forward_primer            reverse_primer score coverage products
@@ -675,7 +675,7 @@ RESOLUTION <- seq(75, 300, 15)
 
 lapply(
   # Random RE combinations
-  rep(sample(1:3, 3), 3), 
+  rep(sample(1:3, 3), 3),
   function(i)
     DesignSignatures(
       dbConn,
@@ -683,7 +683,7 @@ lapply(
       enzymes=RESTRICTION_ENZYMES[i],
       minProductSize=MIN_SIZE,
       maxProductSize=MAX_SIZE,
-      resolution=RESOLUTION, 
+      resolution=RESOLUTION,
       levels=LEVELS
     )
 )
@@ -691,309 +691,309 @@ lapply(
 
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.36 secs
-    ## 
+    ##
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 61.04 secs
-    ## 
+    ##
     ## Selecting the most common primer sequences:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 14.29 secs
-    ## 
+    ##
     ## Determining PCR products from each group:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 6.3 secs
-    ## 
+    ##
     ## Scoring primer pair combinations:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.01 secs
-    ## 
+    ##
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.48 secs
-    ## 
+    ##
     ## Finding the best restriction enzyme:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.95 secs
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.39 secs
-    ## 
+    ##
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 63.94 secs
-    ## 
+    ##
     ## Selecting the most common primer sequences:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 14.26 secs
-    ## 
+    ##
     ## Determining PCR products from each group:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 6.33 secs
-    ## 
+    ##
     ## Scoring primer pair combinations:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.01 secs
-    ## 
+    ##
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.49 secs
-    ## 
+    ##
     ## Finding the best restriction enzyme:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 2.07 secs
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.35 secs
-    ## 
+    ##
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 62.11 secs
-    ## 
+    ##
     ## Selecting the most common primer sequences:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 14.34 secs
-    ## 
+    ##
     ## Determining PCR products from each group:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 5.79 secs
-    ## 
+    ##
     ## Scoring primer pair combinations:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.01 secs
-    ## 
+    ##
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.49 secs
-    ## 
+    ##
     ## Finding the best restriction enzyme:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.88 secs
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.32 secs
-    ## 
+    ##
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 60.99 secs
-    ## 
+    ##
     ## Selecting the most common primer sequences:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 14.19 secs
-    ## 
+    ##
     ## Determining PCR products from each group:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 6.03 secs
-    ## 
+    ##
     ## Scoring primer pair combinations:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.01 secs
-    ## 
+    ##
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.49 secs
-    ## 
+    ##
     ## Finding the best restriction enzyme:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.9 secs
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.35 secs
-    ## 
+    ##
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 61.4 secs
-    ## 
+    ##
     ## Selecting the most common primer sequences:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 14.15 secs
-    ## 
+    ##
     ## Determining PCR products from each group:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 5.99 secs
-    ## 
+    ##
     ## Scoring primer pair combinations:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.01 secs
-    ## 
+    ##
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.48 secs
-    ## 
+    ##
     ## Finding the best restriction enzyme:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 2.09 secs
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.32 secs
-    ## 
+    ##
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 61.33 secs
-    ## 
+    ##
     ## Selecting the most common primer sequences:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 14.16 secs
-    ## 
+    ##
     ## Determining PCR products from each group:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 5.77 secs
-    ## 
+    ##
     ## Scoring primer pair combinations:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.01 secs
-    ## 
+    ##
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.52 secs
-    ## 
+    ##
     ## Finding the best restriction enzyme:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.89 secs
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.33 secs
-    ## 
+    ##
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 61.39 secs
-    ## 
+    ##
     ## Selecting the most common primer sequences:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 14.67 secs
-    ## 
+    ##
     ## Determining PCR products from each group:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 6.02 secs
-    ## 
+    ##
     ## Scoring primer pair combinations:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.01 secs
-    ## 
+    ##
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.5 secs
-    ## 
+    ##
     ## Finding the best restriction enzyme:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.88 secs
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.34 secs
-    ## 
+    ##
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 61.18 secs
-    ## 
+    ##
     ## Selecting the most common primer sequences:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 14.64 secs
-    ## 
+    ##
     ## Determining PCR products from each group:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 5.72 secs
-    ## 
+    ##
     ## Scoring primer pair combinations:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.01 secs
-    ## 
+    ##
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.46 secs
-    ## 
+    ##
     ## Finding the best restriction enzyme:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 2.18 secs
     ## Tallying 8-mers for 5 groups:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.34 secs
-    ## 
+    ##
     ## Designing primer sequences based on the group 'HPV18':
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 60.99 secs
-    ## 
+    ##
     ## Selecting the most common primer sequences:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 14.76 secs
-    ## 
+    ##
     ## Determining PCR products from each group:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 6.35 secs
-    ## 
+    ##
     ## Scoring primer pair combinations:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 0.01 secs
-    ## 
+    ##
     ## Choosing optimal forward and reverse pairs:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.61 secs
-    ## 
+    ##
     ## Finding the best restriction enzyme:
     ## ================================================================================
-    ## 
+    ##
     ## Time difference of 1.99 secs
 
     ## [[1]]
@@ -1300,7 +1300,7 @@ lapply(
     ## 98          0
     ## 99          0
     ## 100         0
-    ## 
+    ##
     ## [[2]]
     ##                 forward_primer             reverse_primer score coverage
     ## 1        GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
@@ -1605,7 +1605,7 @@ lapply(
     ## 98          0
     ## 99          0
     ## 100         0
-    ## 
+    ##
     ## [[3]]
     ##                 forward_primer             reverse_primer score coverage
     ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
@@ -1910,7 +1910,7 @@ lapply(
     ## 98          0
     ## 99          0
     ## 100         0
-    ## 
+    ##
     ## [[4]]
     ##                 forward_primer             reverse_primer score coverage
     ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
@@ -2215,7 +2215,7 @@ lapply(
     ## 98          0
     ## 99          0
     ## 100         0
-    ## 
+    ##
     ## [[5]]
     ##                 forward_primer             reverse_primer score coverage
     ## 1        GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
@@ -2520,7 +2520,7 @@ lapply(
     ## 98          0
     ## 99          0
     ## 100         0
-    ## 
+    ##
     ## [[6]]
     ##                 forward_primer             reverse_primer score coverage
     ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
@@ -2825,7 +2825,7 @@ lapply(
     ## 98          0
     ## 99          0
     ## 100         0
-    ## 
+    ##
     ## [[7]]
     ##                 forward_primer             reverse_primer score coverage
     ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
@@ -3130,7 +3130,7 @@ lapply(
     ## 98          0
     ## 99          0
     ## 100         0
-    ## 
+    ##
     ## [[8]]
     ##                 forward_primer             reverse_primer score coverage
     ## 1        GCTTTGAGGATCCAACACGGC     CATTTATGGCATGCAGCATGCG     0      0.2
@@ -3435,7 +3435,7 @@ lapply(
     ## 98          0
     ## 99          0
     ## 100         0
-    ## 
+    ##
     ## [[9]]
     ##                 forward_primer             reverse_primer score coverage
     ## 1   GCCCCCCTTTAGAACTTAAAAACACA CCCCATAAGGATCTGCAGACATTTGT     0      0.2
@@ -3751,7 +3751,7 @@ lapply(
 #   seq(705, 1000, 5),
 #   seq(1010, 1400, 10)
 # )
-# 
+#
 # TYPE <- 'melt'
 # MIN_SIZE <- 55
 # MAX_SIZE <- 400
@@ -3763,9 +3763,9 @@ lapply(
 
 ``` sql
  "Human papillomavirus"[Primary Organism]
- AND viruses[filter] 
- NOT Polyamides[All Fields] 
- NOT Method[All Fields] 
+ AND viruses[filter]
+ NOT Polyamides[All Fields]
+ NOT Method[All Fields]
  NOT Patent[All Fields]
  AND Anal[All Fields]
 ```
@@ -3776,8 +3776,8 @@ lapply(
 
 ``` sql
 "Human papillomavirus"[Primary Organism]
-NOT Polyamides[All Fields] 
-NOT Method[All Fields] 
+NOT Polyamides[All Fields]
+NOT Method[All Fields]
 NOT Patent[All Fields]
 AND Anal[All Fields]
 AND "Complete Genome"[All Fields]

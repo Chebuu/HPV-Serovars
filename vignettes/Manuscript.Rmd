@@ -17,11 +17,20 @@ output: pdf_document
 
 
 ```{r setup, include=F}
-knitr::opts_chunk$set(echo = T)
+library(knitr)
+knitr::opts_chunk$set(eval = T, echo = T)
 ```
 
 # Introduction
 The first infectious cause of cancer was identified in 1911 by Peyton Rous who demonstrated the transmissibility of a tumor in fowl through injection of sub 0.2 micron filtrate of the tumor \cite{Rous_1911}.
+
+#### Installing this package
+```{r hpvs}
+devtools::install_github('Chebuu/HPV-Serovars')
+library(HPVSerovars)
+```
+
+(Not run) This vignette is packaged and accessible via: `browseVignettes('HPVSerovars')`.
 
 #### Installing OligAarrayAux
 
@@ -37,7 +46,32 @@ library(Design_Group_Specific_Primers)
 vignette('Installing-OligoArrayAux', package = 'Design_Group_Specific_Primers')
 ```
 
+#### Installing OpenPrimer Dependencies
+
+From the [openPimer vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/openPrimeR/inst/doc/openPrimeR_vignette.html):
+
+openPrimeR requires external programs for some features, particularly for computing the physicochemical properties of primers. Please make sure you have the following tools installed on your system such that they are in your system’s path:
+
+[MELTING](http://www.ebi.ac.uk/biomodels/tools/melting/) (>= 5.1.1): For melting temperature computations.
+[ViennaRNA](http://www.tbi.univie.ac.at/RNA/) (>= 2.2.4): For secondary structure prediction.
+[OligoArrayAux](http://unafold.rna.albany.edu/OligoArrayAux.php) (>= 3.8): For primer efficiency computations as performed by DECIPHER.
+[MAFFT](http://mafft.cbrc.jp/alignment/software/) (>= 7.305): For computing multiple sequence alignments.
+[Pandoc](http://pandoc.org/) (>= 1.19.1): For creating PDF reports.
+
+If you would like to be able to access the immunoglobulin repository IMGT from the openPrimeR Shiny app, you should additionally fulfill the following dependencies:
+
+[PhantomJS](http://phantomjs.org/) (>= 2.1): For headless website calls.
+[Python](http://www.python.org/) (>=2.7.9) and the [selenium](http://selenium-python.readthedocs.io/) (>=3.0.1) module: For data extraction scripts.
+openPrimeR will automatically check for all dependencies and inform you about any missing dependencies when the package is attached:
+
+```{r openprimer}
+library(openPrimeR)
+```
+
+Note that the tool is still functional if there are missing external programs. However, we recommend that all dependencies are fulfilled to guarantee the best user experience.
+
 ### Install Bioconductor packages
+[https://www.bioconductor.org/](https://www.bioconductor.org/)
 ```{r biocs, eval=F, error=F, warning=F, message=F}
 # Install from Bioconductor
 if (!requireNamespace("BiocManager", quietly = T))
@@ -55,16 +89,52 @@ help("DECIPHER")
 browseVignettes("DECIPHER")
 ```
 
+Some references to remind me of packages, methods, etc.:
 ```{}
+# CRAN
 # https://rdrr.io/cran/dpcR/f/vignettes/overview.Rmd
 
+# BIOC
 # https://bioconductor.org/packages/release/bioc/html/twoddpcr.html
 # https://bioconductor.org/packages/release/bioc/html/ddCt.html
 # https://bioconductor.org/packages/3.5/bioc/html/mBPCR.html
+
+# Other
+# https://doi.org/10.1007/s13402-017-0331-y
 ```
+
+# Wiki Pheno Data
+I copied the tables from [Wiki: Human_papillomavirus_infection ](https://en.wikipedia.org/wiki/Human_papillomavirus_infection) and included them in the R package assoc. w/ this document `github.com/Chebuu/HPV-Serovars`.
+```{r wikidata}
+data(HPV.Sequelae)
+data(HPV.GenitalCancerRisk)
+
+install.packages('dpcR')
+```
+
+The Wiki data contains phenotypic categorizations of several HPV strains. It's useful for testing.
+
+```{r wikiprint}
+HPV <- c(HPV.Sequelae, HPV.GenitalCancerRisk)
+p.1 <- unique(unlist(HPV))
+
+knitr::kable(
+  sprintf('HPV-%s', sort(p.1)), col.names = '',
+  caption = sprintf(
+    'Unique HPV serotypes (N=%s) (Total=%s): ', 
+    length(p.1), length(HPV)
+  )
+)
+
+hist(unlist(HPV), max(unlist(HPV)), col='blue'); head(HPV, 4)
+HPV
+```
+
 # PaVE Data
-[https://pave.niaid.nih.gov](https://pave.niaid.nih.gov)
-```{}
+eference genomes for all serovars listed in `data(HPV.Sequelae)`and `data(HPV.GenitalCancerRisk)`were selected from amoong the results of the following [PaVEPaVE](https://pave.niaid.nih.gov) query:
+
+
+```{} 
 https://pave.niaid.nih.gov/#search/search_database/kw
 ?dbNamespace=Genomes
 &includeNR=true
@@ -76,9 +146,23 @@ https://pave.niaid.nih.gov/#search/search_database/kw
 &
 ```
 
+```{r}
+
+data(PaVE.Wikiv)
+
+# # DEL
+# library(Biostrings)
+# PaVE.Wikiv<-Biostrings::readDNAStringSet('../inst/extdata/HPV.REFS.PaVE.wikivars.fasta')
+# usethis::use_data(PaVE.Wikiv)
+# # END
+
+
+
+```
+
 # NCBI Data
 
-```{r packs, eval=T, error=F, warning=F, message=F}
+```{r packs, error=F, warning=F, message=F}
 library(dplyr)
 library(tidyr)
 library(stringr)
@@ -145,7 +229,7 @@ dbGetQuery(dbConn, "select * from Seqs") %>% head(4)
 
 Design HPV16-specific F/R primers using `DECIPHER` utilities.
 
-```{r oral_l1_olg, include=T}
+```{r oral_l1_olg}
 tiles.L1 <- TileSeqs(
   dbFile = dbConn,
   minLength = 18,
