@@ -385,7 +385,7 @@ Add2DB(HPV.REF.PaVE.vars %>% mutate(identifier = HPVREHum), dbConn)
 
 dbGetQuery(dbConn, "select * from Seqs") %>% head(4)
 
-expand.grid(
+params <- expand.grid(
   enzymes = lapply(1:3, function(x) 
     RESTRICTION_ENZYMES[
       sample(1:length(RESTRICTION_ENZYMES), 3)
@@ -398,18 +398,10 @@ expand.grid(
 )
 
 mapply(
-  function(e, j.min, j.max, k, m) {
-    DesignSignatures(
-      dbConn,
-      type=TYPE,
-      enzymes=e,
-      minProductSize=j.min,
-      maxProductSize=j.max,
-      resolution=k, 
-      levels=m
-    )
-  },
-  
+  function(...) {
+    DesignSignatures(dbConn, type=TYPE, ...)
+  }, 
+  params
 )
 ```
 ## Anal Isolates
