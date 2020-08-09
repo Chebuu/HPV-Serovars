@@ -191,13 +191,12 @@ NOT Isolate[Title]
 ## Oral Isolates
 [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore)
 ```{sql, eval=F}
-https://www.ncbi.nlm.nih.gov/nuccore
-     "Human papillomavirus"[Primary Organism] 
- AND viruses[filter] 
- NOT Polyamides[All Fields] 
- NOT Method[All Fields] 
- NOT Patent[All Fields] 
- AND Oral[All Fields] 
+"Human papillomavirus"[Primary Organism] 
+AND viruses[filter] 
+NOT Polyamides[All Fields] 
+NOT Method[All Fields] 
+NOT Patent[All Fields] 
+AND Oral[All Fields] 
 ```
 
 ### L1 gene
@@ -205,10 +204,10 @@ A collection of *l1* DNA sequences (avg. ~600bp) from various oral isolates of H
 
 ```{r oral_L1}
 doAlignment <- function(xset) {
-    useqs <- unique(xset)
-    uidxs <- match(xset, useqs)
-    aseqs <- AlignSeqs(useqs, verbose=F) 
-    aseqs[uidxs]
+  useqs <- unique(xset)
+  uidxs <- match(xset, useqs)
+  aseqs <- AlignSeqs(useqs, verbose=F) 
+  aseqs[uidxs]
 }
 
 dbConn <- dbConnect(SQLite(), ':memory:')
@@ -374,27 +373,43 @@ lapply(
 
 #### RFLP optimization by grid search
 ```{r grid_search}
+dbDisconnect(SQLite())
 
-
-library(Biostrings)
+data(RESTRICTION_ENZYMES)
 
 data(HPV.REF.PaVE.seqs)
 data(HPV.REF.PaVE.vars)
 
-# https://www.r-bloggers.com/grid-search-in-the-tidyverse/
+Seqs2DB(HPV.REF.PaVE.seqs, 'XStringSet', dbConn, '')
+Add2DB(HPV.REF.PaVE.vars %>% mutate(identifier = HPVREHum), dbConn)
+
+dbGetQuery(dbConn, "select * from Seqs") %>% head(4)
+
+expand.grid(
+  enzymes = lapply(1:3, function(x) 
+    RESTRICTION_ENZYMES[
+      sample(1:length(RESTRICTION_ENZYMES), 3)
+    ]
+  ),
+  minProductSize = seq(80, 150, length.out = 3),
+  maxProductSize = seq(500, 5000, length.out = 3),
+  resolution = seq(75, 300, length.out = 3), 
+  levels = seq(5, 20, length.out = 3)
+)
+
 mapply(
-  function(i, j.min, j.max, k, m) {
+  function(e, j.min, j.max, k, m) {
     DesignSignatures(
       dbConn,
       type=TYPE,
-      enzymes=RESTRICTION_ENZYMES[i],
+      enzymes=e,
       minProductSize=j.min,
       maxProductSize=j.max,
       resolution=k, 
       levels=m
     )
   },
-  rep(sample(1:3, 3), 3)
+  
 )
 ```
 ## Anal Isolates
