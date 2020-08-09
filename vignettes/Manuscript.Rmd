@@ -154,6 +154,7 @@ data(PaVE.Wikiv)
 # # END
 
 
+# https://www.youtube.com/watch?v=zu8Z9-kebKQ&list=PLjiXAZO27elDHGlQwfd06r7coiFtpPkvI&index=5
 
 ```
 
@@ -398,12 +399,22 @@ params <- expand.grid(
   levels = seq(5, 20, length.out = 3)
 )
 
-mapply(
-  function(...) {
-    DesignSignatures(dbConn, type = TYPE, ...)
-  }, 
-  params
-)
+gridsearch <- apply(
+  params %>% 
+    mutate(
+      dbConn = rep(dbConn, nrow(params)), 
+      type = rep('melt', nrow(params))
+    ), 
+  1, 
+  function(arg) 
+    list(arg = arg, out = do.call(DesignSignatures, as.list(p)))
+) %>% bind_rows
+
+objective <- function(x) {
+  print(x)
+}
+
+
 ```
 
 ## Anal Isolates
