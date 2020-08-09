@@ -371,7 +371,30 @@ lapply(
 # MIN_SIZE <- 55
 # MAX_SIZE <- 400
 ```
+#### RFLP optimization by grid search
+```{r grid_search}
 
+
+library(Biostrings)
+
+data(HPV.REF.PaVE.seqs)
+data(HPV.REF.PaVE.vars)
+
+# https://www.r-bloggers.com/grid-search-in-the-tidyverse/
+lapply(
+  rep(sample(1:3, 3), 3),  # Random RE combinations
+  function(i)
+    DesignSignatures(
+      dbConn,
+      type=TYPE,
+      enzymes=RESTRICTION_ENZYMES[i],
+      minProductSize=MIN_SIZE,
+      maxProductSize=MAX_SIZE,
+      resolution=RESOLUTION, 
+      levels=LEVELS
+    )
+)
+```
 ## Anal Isolates
 [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore)
 ```{sql, eval=F}
