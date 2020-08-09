@@ -371,6 +371,7 @@ lapply(
 # MIN_SIZE <- 55
 # MAX_SIZE <- 400
 ```
+
 #### RFLP optimization by grid search
 ```{r grid_search}
 
@@ -381,18 +382,19 @@ data(HPV.REF.PaVE.seqs)
 data(HPV.REF.PaVE.vars)
 
 # https://www.r-bloggers.com/grid-search-in-the-tidyverse/
-lapply(
-  rep(sample(1:3, 3), 3),  # Random RE combinations
-  function(i)
+mapply(
+  function(i, j.min, j.max, k, m) {
     DesignSignatures(
       dbConn,
       type=TYPE,
       enzymes=RESTRICTION_ENZYMES[i],
-      minProductSize=MIN_SIZE,
-      maxProductSize=MAX_SIZE,
-      resolution=RESOLUTION, 
-      levels=LEVELS
+      minProductSize=j.min,
+      maxProductSize=j.max,
+      resolution=k, 
+      levels=m
     )
+  },
+  rep(sample(1:3, 3), 3)
 )
 ```
 ## Anal Isolates
