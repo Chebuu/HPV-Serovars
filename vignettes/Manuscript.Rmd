@@ -320,14 +320,14 @@ ENZYMES <- NULL
 
 DesignSignatures(
   dbConn,
-  type=TYPE,
-  minLength=MIN_LENGTH,
-  maxLength=MAX_LENGTH,
-  minProductSize=MIN_SIZE,
-  maxProductSize=MAX_SIZE,
-  resolution=RESOLUTION,
-  levels=LEVELS,
-  enzymes=ENZYMES
+  type = TYPE,
+  minLength = MIN_LENGTH,
+  maxLength = MAX_LENGTH,
+  minProductSize = MIN_SIZE,
+  maxProductSize = MAX_SIZE,
+  resolution = RESOLUTION,
+  levels = LEVELS,
+  enzymes = ENZYMES
 )
 ```
 
@@ -347,12 +347,12 @@ lapply(
   function(i)
     DesignSignatures(
       dbConn,
-      type=TYPE,
-      enzymes=RESTRICTION_ENZYMES[i],
-      minProductSize=MIN_SIZE,
-      maxProductSize=MAX_SIZE,
-      resolution=RESOLUTION, 
-      levels=LEVELS
+      type = TYPE,
+      enzymes = RESTRICTION_ENZYMES[i],
+      minProductSize = MIN_SIZE,
+      maxProductSize = MAX_SIZE,
+      resolution = RESOLUTION, 
+      levels = LEVELS
     )
 )
 
@@ -372,6 +372,7 @@ lapply(
 ```
 
 #### RFLP optimization by grid search
+
 ```{r grid_search}
 dbDisconnect(SQLite())
 
@@ -399,11 +400,12 @@ params <- expand.grid(
 
 mapply(
   function(...) {
-    DesignSignatures(dbConn, type=TYPE, ...)
+    DesignSignatures(dbConn, type = TYPE, ...)
   }, 
   params
 )
 ```
+
 ## Anal Isolates
 [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore)
 ```{sql, eval=F}
