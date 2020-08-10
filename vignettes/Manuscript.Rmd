@@ -89,6 +89,18 @@ help("DECIPHER")
 browseVignettes("DECIPHER")
 ```
 
+#### Make alignment utils:
+
+```{r alignment}
+doAlignment <- function(xset) {
+  useqs <- unique(xset)
+  uidxs <- match(xset, useqs)
+  aseqs <- AlignSeqs(useqs, verbose=F) 
+  aseqs[uidxs]
+}
+```
+
+#### Quick-ref
 Some references to remind me of packages, methods, etc.:
 ```{}
 # CRAN
@@ -145,16 +157,31 @@ https://pave.niaid.nih.gov/#search/search_database/kw
 
 ```{r}
 
-data(PaVE.Wikiv)
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+library(Biostrings)
+library(DECIPHER)
+
+# data(PaVE.Wikiv)
+data(HPV.REF.PaVE.seqs)
+data(HPV.REF.PaVE.vars)
+
+
+dbConn <- dbConnect(SQLite(), ':memory:')
+DECIPHER::Seqs2DB(HPV.REF.PaVE.seqs, 'XStringSet', dbConn, '')
+DECIPHER::Add2DB(HPV.REF.PaVE.vars, dbConn, verbose = F)
 
 # # DEL
 # library(Biostrings)
 # PaVE.Wikiv<-Biostrings::readDNAStringSet('../inst/extdata/HPV.REFS.PaVE.wikivars.fasta')
 # usethis::use_data(PaVE.Wikiv)
+#
+# https://www.youtube.com/watch?v=zu8Z9-kebKQ&list=PLjiXAZO27elDHGlQwfd06r7coiFtpPkvI&index=5
+#
 # # END
 
-
-# https://www.youtube.com/watch?v=zu8Z9-kebKQ&list=PLjiXAZO27elDHGlQwfd06r7coiFtpPkvI&index=5
 
 ```
 
@@ -204,13 +231,6 @@ AND Oral[All Fields]
 A collection of *l1* DNA sequences (avg. ~600bp) from various oral isolates of HPV (extracted from results of GenBank query above) are aligned and loaded in SQLite (RAM) along with annotations from GenBank that describe the serotype of each isolate.
 
 ```{r oral_L1}
-doAlignment <- function(xset) {
-  useqs <- unique(xset)
-  uidxs <- match(xset, useqs)
-  aseqs <- AlignSeqs(useqs, verbose=F) 
-  aseqs[uidxs]
-}
-
 dbConn <- dbConnect(SQLite(), ':memory:')
 
 Oral.L1.seqs <- readDNAStringSet('HPV.oral.L1.fasta') %>% doAlignment
@@ -375,15 +395,16 @@ lapply(
 #### RFLP optimization by grid search
 
 ```{r grid_search}
-dbDisconnect(SQLite())
+dbDisconnect(dbConn)
+
+dbConn <- dbConnect(SQLite(), ':memory:')
 
 data(RESTRICTION_ENZYMES)
 
 data(HPV.REF.PaVE.seqs)
 data(HPV.REF.PaVE.vars)
-
 Seqs2DB(HPV.REF.PaVE.seqs, 'XStringSet', dbConn, '')
-Add2DB(HPV.REF.PaVE.vars %>% mutate(identifier = HPVREHum), dbConn)
+Add2DB(data.frame(identifier = as.character(HPV.REF.PaVE.vars)), dbConn)
 
 dbGetQuery(dbConn, "select * from Seqs") %>% head(4)
 
@@ -395,26 +416,17 @@ params <- expand.grid(
   ),
   minProductSize = seq(80, 150, length.out = 3),
   maxProductSize = seq(500, 5000, length.out = 3),
-  resolution = seq(75, 300, length.out = 3), 
+  resolution = seq(1, 2, length.out = 3), 
   levels = seq(5, 20, length.out = 3)
-)
-
-gridsearch <- apply(
-  params %>% 
-    mutate(
-      dbConn = rep(dbConn, nrow(params)), 
-      type = rep('melt', nrow(params))
-    ), 
-  1, 
-  function(arg) 
-    list(arg = arg, out = do.call(DesignSignatures, as.list(p)))
+) %>% mutate(type = rep('melt', 243))
+?DesignSignatures
+gridsearch <- apply(params, 1, function(...) 
+    list(arg = as.list(...), out = do.call(DesignSignatures, list(dbFile = dbConn, tblName = 'Seqs', identifier = '', ...)))
 ) %>% bind_rows
 
 objective <- function(x) {
   print(x)
 }
-
-
 ```
 
 ## Anal Isolates
@@ -443,3 +455,4 @@ AND "Complete Genome"[All Fields]
 tryCatch({dbDisconnect(dbconn)}, error=warning)
 tryCatch({dbDisconnect(dbConn)}, error=warning)
 ```
+
