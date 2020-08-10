@@ -384,6 +384,8 @@ dbGetQuery(dbConn, "select * from Seqs") %>% head(4)
 
 data(RESTRICTION_ENZYMES)
 
+FOCUS_ID <- 'HPV11'
+
 TYPE <- 'melt'
 LEVELS <- 4
 MIN_LENGTH <- 15
@@ -398,14 +400,15 @@ lapply(
     DesignSignatures(
       dbConn,
       type = TYPE,
-      identifier = 'HPV11',
+      identifier = '',
+      focusID = FOCUS_ID,
       enzymes = RESTRICTION_ENZYMES[i],
       minProductSize = MIN_SIZE,
       maxProductSize = MAX_SIZE,
       resolution = RESOLUTION, 
       levels = LEVELS
     )
-)
+) %>% print
 
 # TYPE <- 'length'
 # LEVELS <- 2
@@ -424,7 +427,7 @@ lapply(
 
 #### RFLP optimization by grid search
 
-```{r grid_search}
+```{r grid_search, eval=F}
 FOCUS_ID <- 'HPV18'
 
 params <- expand.grid(
