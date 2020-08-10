@@ -192,8 +192,6 @@ DECIPHER::Add2DB(
 # https://www.youtube.com/watch?v=zu8Z9-kebKQ&list=PLjiXAZO27elDHGlQwfd06r7coiFtpPkvI&index=5
 #
 # # END
-
-
 ```
 
 # NCBI Data
@@ -406,19 +404,6 @@ lapply(
 #### RFLP optimization by grid search
 
 ```{r grid_search}
-dbDisconnect(dbConn)
-
-dbConn <- dbConnect(SQLite(), ':memory:')
-
-data(RESTRICTION_ENZYMES)
-
-data(HPV.REF.PaVE.seqs)
-data(HPV.REF.PaVE.vars)
-Seqs2DB(HPV.REF.PaVE.seqs, 'XStringSet', dbConn, '')
-Add2DB(data.frame(identifier = as.character(HPV.REF.PaVE.vars)), dbConn)
-
-dbGetQuery(dbConn, "select * from Seqs") %>% head(4)
-
 params <- expand.grid(
   enzymes = lapply(1:3, function(x) 
     RESTRICTION_ENZYMES[
@@ -432,7 +417,7 @@ params <- expand.grid(
 ) %>% mutate(type = rep('melt', 243))
 
 gridsearch <- apply(params, 1, function(...) 
-    list(arg = as.list(...), out = do.call(DesignSignatures, list(dbFile = dbConn, tblName = 'Seqs', identifier = '', ...)))
+    list(arg = as.list(...), out = do.call(DesignSignatures, list(dbFile = dbConn, tblName = 'Seqs', identifier = 'HPV18', ...)))
 ) %>% bind_rows
 
 objective <- function(x) {
