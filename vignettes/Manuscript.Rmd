@@ -139,9 +139,10 @@ knitr::kable(
 hist(unlist(HPV), max(unlist(HPV)), col='blue'); head(HPV, 4)
 ```
 
-# PaVE Data
-Reference genomes for all serovars listed in `data(HPV.Sequelae)`and `data(HPV.GenitalCancerRisk)`were selected from among the results of the following [PaVEPaVE](https://pave.niaid.nih.gov) query:
 
+# PaVE Data
+
+Reference genomes for all serovars listed in `data(HPV.Sequelae)`and `data(HPV.GenitalCancerRisk)`were selected from among the results of the following [PaVEPaVE](https://pave.niaid.nih.gov) query:
 
 ```{} 
 https://pave.niaid.nih.gov/#search/search_database/kw
@@ -168,10 +169,20 @@ library(DECIPHER)
 data(HPV.REF.PaVE.seqs)
 data(HPV.REF.PaVE.vars)
 
+testVars <- lapply(grep('[1-9]*', HPV.REF.PaVE.vars, value = T), function(x) {
+  sapply(HPV.Sequelae, function(y) any(x %in% y))
+})
 
+tryCatch(dbDisconnect(dbConn), error = warning)
 dbConn <- dbConnect(SQLite(), ':memory:')
 DECIPHER::Seqs2DB(HPV.REF.PaVE.seqs, 'XStringSet', dbConn, '')
-DECIPHER::Add2DB(HPV.REF.PaVE.vars, dbConn, verbose = F)
+DECIPHER::Add2DB(
+  data.frame(
+    # identifier = testVars
+    identifier = lapply(HPV.REF.PaVE.vars, function(x) grep('[1-9]', x, perl = T))
+  ), 
+  dbConn, verbose = F
+)
 
 # # DEL
 # library(Biostrings)
@@ -419,7 +430,7 @@ params <- expand.grid(
   resolution = seq(1, 2, length.out = 3), 
   levels = seq(5, 20, length.out = 3)
 ) %>% mutate(type = rep('melt', 243))
-?DesignSignatures
+
 gridsearch <- apply(params, 1, function(...) 
     list(arg = as.list(...), out = do.call(DesignSignatures, list(dbFile = dbConn, tblName = 'Seqs', identifier = '', ...)))
 ) %>% bind_rows
