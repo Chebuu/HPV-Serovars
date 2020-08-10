@@ -173,8 +173,8 @@ testVars <- lapply(grep('[1-9]*', HPV.REF.PaVE.vars, value = T), function(x) {
   sapply(HPV.Sequelae, function(y) any(x %in% y))
 })
 
-tryCatch(dbDisconnect(dbConn), error = warning)
 dbConn <- dbConnect(SQLite(), ':memory:')
+
 DECIPHER::Seqs2DB(HPV.REF.PaVE.seqs, 'XStringSet', dbConn, '')
 DECIPHER::Add2DB(
   data.frame(
@@ -242,15 +242,18 @@ AND Oral[All Fields]
 A collection of *l1* DNA sequences (avg. ~600bp) from various oral isolates of HPV (extracted from results of GenBank query above) are aligned and loaded in SQLite (RAM) along with annotations from GenBank that describe the serotype of each isolate.
 
 ```{r oral_L1}
-data(Oral.L1.seqs)
-data(Oral.L1.vars)
+# library(HPVSerovars)
+# 
+# data(Oral.L1.seqs)
+# data(Oral.L1.vars)
+
+load('../data/Oral.L1.seqs.rda')
+load('../data/Oral.L1.vars.rda')
 
 dbConn <- dbConnect(SQLite(), ':memory:')
 
 # Oral.L1.seqs <- readDNAStringSet('../inst/extdata/HPV.oral.L1.fasta') %>% doAlignment
 # Oral.L1.vars <- read.csv('../inst/extdata/HPV.oral.L1.csv', stringsAsFactors = F)
-
-print(Oral.L1.seqs)
 
 Seqs2DB(Oral.L1.seqs, 'XStringSet', dbConn, '')
 Add2DB(Oral.L1.vars %>% mutate(identifier = SVAR), dbConn)
@@ -274,7 +277,7 @@ print(
 
 oligos.L1 <- DesignPrimers(
   tiles = tiles.L1,
-  identifier = 'HPV16',
+  identifier = 'HPV4',
   worstScore = -1E3,
   maxPermutations = 5,
   minGroupCoverage = 0.85,
@@ -367,6 +370,18 @@ DesignSignatures(
 ```
 
 ```{r oral_l1_rflp}
+data(Oral.L1.seqs)
+data(Oral.L1.vars)
+
+dbConn <- dbConnect(SQLite(), ':memory:')
+
+print(Oral.L1.seqs)
+
+Seqs2DB(Oral.L1.seqs, 'XStringSet', dbConn, '')
+Add2DB(Oral.L1.vars %>% mutate(identifier = SVAR), dbConn)
+
+dbGetQuery(dbConn, "select * from Seqs") %>% head(4)
+
 data(RESTRICTION_ENZYMES)
 
 TYPE <- 'melt'
@@ -453,7 +468,7 @@ AND "Complete Genome"[All Fields]
 ```
 
 ```{r disconnect, eval=F}
-tryCatch({dbDisconnect(dbconn)}, error=warning)
-tryCatch({dbDisconnect(dbConn)}, error=warning)
+# tryCatch({dbDisconnect(dbconn)}, error=warning)
+# tryCatch({dbDisconnect(dbConn)}, error=warning)
 ```
 
