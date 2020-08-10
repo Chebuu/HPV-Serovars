@@ -1,13 +1,13 @@
 ---
 title: Designing PCR Diagnostics that Discriminate HPV Serotypes by DNA Sequence
 author: chebuu
-bibliography: citations.bib
-output: pdf_document
+output: github_document
 ---
 
 
 <!-- --- -->
 <!-- ... -->
+<!-- bibliography: citations.bib -->
 <!-- includes: -->
 <!--   in_header:  -->
 <!--     - preamble.tex -->
@@ -65,7 +65,7 @@ If you would like to be able to access the immunoglobulin repository IMGT from t
 openPrimeR will automatically check for all dependencies and inform you about any missing dependencies when the package is attached:
 
 ```{r openprimer}
-library(openPrimeR)
+# library(openPrimeR)
 ```
 
 Note that the tool is still functional if there are missing external programs. However, we recommend that all dependencies are fulfilled to guarantee the best user experience.
@@ -203,6 +203,8 @@ library(stringr)
 
 library(Biostrings)
 library(DECIPHER)
+
+library(HPVSerovars)
 ```
 
 I included GenBank queries for all the HPV DNA in this repo. If you want to run them just paste in the search bar at: [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore) 
@@ -240,10 +242,13 @@ AND Oral[All Fields]
 A collection of *l1* DNA sequences (avg. ~600bp) from various oral isolates of HPV (extracted from results of GenBank query above) are aligned and loaded in SQLite (RAM) along with annotations from GenBank that describe the serotype of each isolate.
 
 ```{r oral_L1}
+data(Oral.L1.seqs)
+data(Oral.L1.vars)
+
 dbConn <- dbConnect(SQLite(), ':memory:')
 
-Oral.L1.seqs <- readDNAStringSet('HPV.oral.L1.fasta') %>% doAlignment
-Oral.L1.vars <- read.csv('HPV.oral.L1.csv', stringsAsFactors = F)
+# Oral.L1.seqs <- readDNAStringSet('../inst/extdata/HPV.oral.L1.fasta') %>% doAlignment
+# Oral.L1.vars <- read.csv('../inst/extdata/HPV.oral.L1.csv', stringsAsFactors = F)
 
 print(Oral.L1.seqs)
 
