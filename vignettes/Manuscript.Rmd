@@ -169,6 +169,8 @@ library(stringr)
 library(Biostrings)
 library(DECIPHER)
 
+library(HPVSerovars)
+
 # data(PaVE.Wikiv)
 data(HPV.REF.PaVE.seqs)
 data(HPV.REF.PaVE.vars)
@@ -187,29 +189,16 @@ DECIPHER::Add2DB(
   ), 
   dbConn, verbose = F
 )
+```
 
-# # DEL
-# library(Biostrings)
-# PaVE.Wikiv<-Biostrings::readDNAStringSet('../inst/extdata/HPV.REFS.PaVE.wikivars.fasta')
-# usethis::use_data(PaVE.Wikiv)
-#
-# https://www.youtube.com/watch?v=zu8Z9-kebKQ&list=PLjiXAZO27elDHGlQwfd06r7coiFtpPkvI&index=5
-#
-# # END
+```{r risk_groups}
+# Genital cancer risk groups
+gA <- system.file('GroupA.fasta', 'HPVSerovars') # Highest risk
+gB <- system.file('GroupB.fasta', 'HPVSerovars') # Other high risk
+gC <- system.file('GroupC.fasta', 'HPVSerovars') # Probably high risk
 ```
 
 # NCBI Data
-
-```{r packs, error=F, warning=F, message=F}
-library(dplyr)
-library(tidyr)
-library(stringr)
-
-library(Biostrings)
-library(DECIPHER)
-
-library(HPVSerovars)
-```
 
 I included GenBank queries for all the HPV DNA in this repo. If you want to run them just paste in the search bar at: [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore) 
 
@@ -297,7 +286,7 @@ Honestly, I don't really understand the dimensions of the dataframe output by `D
 
 Plot hybridization curves for the reverse compliment of each primer pair (5) in each primer set (7). 
 
-```{r melt_curves, include=T}
+```{r melt_curves, eval = F, include=T}
 plotMeltCurves <- function(temps, effs) {
   plot(
     temps, effs[,1], ylim=c(0,1),
@@ -373,7 +362,7 @@ DesignSignatures(
 )
 ```
 
-```{r oral_l1_rflp}
+```{r oral_l1_rflp, eval = F}
 data(Oral.L1.seqs)
 data(Oral.L1.vars)
 
@@ -398,7 +387,7 @@ MIN_SIZE <- 60
 MAX_SIZE <- 200
 RESOLUTION <- seq(75, 300, 15)
 
-lapply(
+RFLP.Oal.L1 <- lapply(
   rep(sample(1:3, 3), 3),  # Random RE combinations
   function(i)
     DesignSignatures(
@@ -412,7 +401,9 @@ lapply(
       resolution = RESOLUTION, 
       levels = LEVELS
     )
-) %>% print
+)
+
+head(RFLP.Oal.L1)
 
 # TYPE <- 'length'
 # LEVELS <- 2
