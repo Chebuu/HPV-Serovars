@@ -46,30 +46,6 @@ library(Design_Group_Specific_Primers)
 vignette('Installing-OligoArrayAux', package = 'Design_Group_Specific_Primers')
 ```
 
-#### Installing OpenPrimer Dependencies
-
-From the [openPimer vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/openPrimeR/inst/doc/openPrimeR_vignette.html):
-
-openPrimeR requires external programs for some features, particularly for computing the physicochemical properties of primers. Please make sure you have the following tools installed on your system such that they are in your system’s path:
-
-[MELTING](http://www.ebi.ac.uk/biomodels/tools/melting/) (>= 5.1.1): For melting temperature computations.
-[ViennaRNA](http://www.tbi.univie.ac.at/RNA/) (>= 2.2.4): For secondary structure prediction.
-[OligoArrayAux](http://unafold.rna.albany.edu/OligoArrayAux.php) (>= 3.8): For primer efficiency computations as performed by DECIPHER.
-[MAFFT](http://mafft.cbrc.jp/alignment/software/) (>= 7.305): For computing multiple sequence alignments.
-[Pandoc](http://pandoc.org/) (>= 1.19.1): For creating PDF reports.
-
-If you would like to be able to access the immunoglobulin repository IMGT from the openPrimeR Shiny app, you should additionally fulfill the following dependencies:
-
-[PhantomJS](http://phantomjs.org/) (>= 2.1): For headless website calls.
-[Python](http://www.python.org/) (>=2.7.9) and the [selenium](http://selenium-python.readthedocs.io/) (>=3.0.1) module: For data extraction scripts.
-openPrimeR will automatically check for all dependencies and inform you about any missing dependencies when the package is attached:
-
-```{r openprimer}
-# library(openPrimeR)
-```
-
-Note that the tool is still functional if there are missing external programs. However, we recommend that all dependencies are fulfilled to guarantee the best user experience.
-
 ### Install Bioconductor packages
 [https://www.bioconductor.org/](https://www.bioconductor.org/)
 ```{r biocs, eval=F, error=F, warning=F, message=F}
@@ -89,7 +65,20 @@ help("DECIPHER")
 browseVignettes("DECIPHER")
 ```
 
-#### Make alignment utils:
+### Load packages
+
+```{r packs, eval = T, message=FALSE, warning=FALSE, error=FALSE}
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+library(Biostrings)
+library(DECIPHER)
+
+library(HPVSerovars)
+```
+
+#### Make an alignment utility:
 
 ```{r alignment}
 doAlignment <- function(xset) {
@@ -98,23 +87,6 @@ doAlignment <- function(xset) {
   aseqs <- AlignSeqs(useqs, verbose=F) 
   aseqs[uidxs]
 }
-```
-
-#### Quick-ref
-
-Some references to remind me of packages, methods, etc.:
-
-```{}
-# CRAN
-# https://rdrr.io/cran/dpcR/f/vignettes/overview.Rmd
-
-# BIOC
-# https://bioconductor.org/packages/release/bioc/html/twoddpcr.html
-# https://bioconductor.org/packages/release/bioc/html/ddCt.html
-# https://bioconductor.org/packages/3.5/bioc/html/mBPCR.html
-
-# Other
-# https://doi.org/10.1007/s13402-017-0331-y
 ```
 
 # Wiki Pheno Data
@@ -141,90 +113,6 @@ knitr::kable(
 )
 
 hist(unlist(HPV), max(unlist(HPV)), col='blue'); head(HPV, 4)
-```
-
-
-# PaVE Data
-
-Reference genomes for all serovars listed in `data(HPV.Sequelae)`and `data(HPV.GenitalCancerRisk)`were selected from among the results of the following [PaVEPaVE](https://pave.niaid.nih.gov) query:
-
-```{} 
-https://pave.niaid.nih.gov/#search/search_database/kw
-?dbNamespace=Genomes
-&includeNR=true
-&refCloneOnly=false
-&sort=Locus_ID
-&sortType=true
-&page=600&start=1
-&text=Human&showTable=1
-&
-```
-
-```{r}
-
-library(dplyr)
-library(tidyr)
-library(stringr)
-
-library(Biostrings)
-library(DECIPHER)
-
-library(HPVSerovars)
-
-# data(PaVE.Wikiv)
-data(HPV.REF.PaVE.seqs)
-data(HPV.REF.PaVE.vars)
-
-testVars <- lapply(grep('[1-9]*', HPV.REF.PaVE.vars, value = T), function(x) {
-  sapply(HPV.Sequelae, function(y) any(x %in% y))
-})
-
-dbConn <- dbConnect(SQLite(), ':memory:')
-
-DECIPHER::Seqs2DB(HPV.REF.PaVE.seqs, 'XStringSet', dbConn, '')
-DECIPHER::Add2DB(
-  data.frame(
-    # identifier = testVars
-    identifier = lapply(HPV.REF.PaVE.vars, function(x) grep('[1-9]', x, perl = T))
-  ), 
-  dbConn, verbose = F
-)
-```
-
-```{r risk_groups}
-# Genital cancer risk groups
-gA <- Biostrings::readDNAStringSet('inst/extdata/GroupA.fasta') 
-# system.file('GroupA.fasta', 'HPVSerovars') # Highest risk
-gB <- Biostrings::readDNAStringSet('inst/extdata/GroupB.fasta') 
-# system.file('GroupB.fasta', 'HPVSerovars') # Other high risk
-gC <- Biostrings::readDNAStringSet('inst/extdata/GroupC.fasta') 
-# system.file('GroupC.fasta', 'HPVSerovars') # Probably high ris
-
-dbConn <- dbConnect(RSQLite::SQLite(), ':memory:')
-
-Seqs2DB(
-  c(gA,gB,gC), 
-  type = 'XStringSet', 
-  dbFile = dbConn, 
-  identifier = ''
-)
-
-Add2DB(
-  data.frame(
-    identifier = c(
-      rep('A', length(gA)), 
-      rep('B', length(gB)), 
-      rep('C', length(gC))
-    )
-  ), 
-  dbConn
-)
-
-gABC.synt <- FindSynteny(dbConn)
-
-summary(gABC.synt)
-pairs(gABC.synt, boxBlocks=TRUE)
-unlist(AlignSynteny(gABC.synt, dbConn)) %>% head(4)
 ```
 
 # NCBI Data
@@ -261,31 +149,22 @@ AND Oral[All Fields]
 ```
 
 ### L1 gene
+
 A collection of *l1* DNA sequences (avg. ~600bp) from various oral isolates of HPV (extracted from results of GenBank query above) are aligned and loaded in SQLite (RAM) along with annotations from GenBank that describe the serotype of each isolate.
 
-```{r oral_L1}
-library(HPVSerovars)
+#### Design HPV16-specific F/R primers using `DECIPHER` utilities.
 
+```{r oral_L1}
 data(Oral.L1.seqs)
 data(Oral.L1.vars)
 
-# load('../data/Oral.L1.seqs.rda')
-# load('../data/Oral.L1.vars.rda')
-
-dbConn <- dbConnect(SQLite(), ':memory:')
-
-# Oral.L1.seqs <- readDNAStringSet('../inst/extdata/HPV.oral.L1.fasta') %>% doAlignment
-# Oral.L1.vars <- read.csv('../inst/extdata/HPV.oral.L1.csv', stringsAsFactors = F)
+dbConn <- dbConnect(RSQLite::SQLite(), ':memory:')
 
 Seqs2DB(Oral.L1.seqs, 'XStringSet', dbConn, '')
 Add2DB(Oral.L1.vars %>% mutate(identifier = SVAR), dbConn)
 
 dbGetQuery(dbConn, "select * from Seqs") %>% head(4)
-```
 
-Design HPV16-specific F/R primers using `DECIPHER` utilities.
-
-```{r oral_l1_olg}
 tiles.L1 <- TileSeqs(
   dbFile = dbConn,
   minLength = 18,
@@ -512,8 +391,103 @@ AND Anal[All Fields]
 AND "Complete Genome"[All Fields]
 ```
 
-```{r disconnect, eval=F}
-# tryCatch({dbDisconnect(dbconn)}, error=warning)
-# tryCatch({dbDisconnect(dbConn)}, error=warning)
+# PaVE Data
+
+Reference genomes for all serovars listed in `data(HPV.Sequelae)`and `data(HPV.GenitalCancerRisk)`were selected from among the results of the following [PaVEPaVE](https://pave.niaid.nih.gov) query:
+
+```{} 
+https://pave.niaid.nih.gov/#search/search_database/kw
+?dbNamespace=Genomes
+&includeNR=true
+&refCloneOnly=false
+&sort=Locus_ID
+&sortType=true
+&page=600&start=1
+&text=Human&showTable=1
+&
 ```
 
+```{r pave_vars}
+# data(PaVE.Wikiv)
+data(HPV.REF.PaVE.seqs)
+data(HPV.REF.PaVE.vars)
+
+testVars <- lapply(grep('[1-9]*', HPV.REF.PaVE.vars, value = T), function(x) {
+  sapply(HPV.Sequelae, function(y) any(x %in% y))
+})
+
+dbConn <- dbConnect(SQLite(), ':memory:')
+
+DECIPHER::Seqs2DB(HPV.REF.PaVE.seqs, 'XStringSet', dbConn, '')
+DECIPHER::Add2DB(
+  data.frame(
+    # identifier = testVars
+    identifier = lapply(HPV.REF.PaVE.vars, function(x) grep('[1-9]', x, perl = T))
+  ), 
+  dbConn, verbose = F
+)
+```
+
+#### Genital cancer risk groups (PaVE REF genomes)
+
+HPV reference genomes from PaVE categorized by risk of genital (but not anal) cancer.
+
+```{r risk_groups}
+library(HPVSerovars)
+
+data(gA) # High risk
+data(gB) # Med risk
+data(gC) # Some risk
+
+dbDisconnect(dbConn)
+
+dbConn <- dbConnect(RSQLite::SQLite(), ':memory:')
+
+Seqs2DB(
+  c(gA,gB,gC), 
+  type = 'XStringSet', 
+  dbFile = dbConn, 
+  identifier = ''
+)
+
+Add2DB(
+  data.frame(
+    identifier = c(
+      rep('A', length(gA)), 
+      rep('B', length(gB)), 
+      rep('C', length(gC))
+    )
+  ), 
+  dbConn
+)
+
+gABC.synt <- FindSynteny(dbConn)
+
+summary(gABC.synt)
+pairs(gABC.synt, boxBlocks=TRUE)
+unlist(AlignSynteny(gABC.synt, dbConn)) %>% head(4)
+```
+
+### Using OpenPrimer
+#### Installing OpenPrimer Dependencies
+From the [openPimer vignette](https://www.bioconductor.org/packages/devel/bioc/vignettes/openPrimeR/inst/doc/openPrimeR_vignette.html):
+
+openPrimeR requires external programs for some features, particularly for computing the physicochemical properties of primers. Please make sure you have the following tools installed on your system such that they are in your system’s path:
+
+[MELTING](http://www.ebi.ac.uk/biomodels/tools/melting/) (>= 5.1.1): For melting temperature computations.
+[ViennaRNA](http://www.tbi.univie.ac.at/RNA/) (>= 2.2.4): For secondary structure prediction.
+[OligoArrayAux](http://unafold.rna.albany.edu/OligoArrayAux.php) (>= 3.8): For primer efficiency computations as performed by DECIPHER.
+[MAFFT](http://mafft.cbrc.jp/alignment/software/) (>= 7.305): For computing multiple sequence alignments.
+[Pandoc](http://pandoc.org/) (>= 1.19.1): For creating PDF reports.
+
+If you would like to be able to access the immunoglobulin repository IMGT from the openPrimeR Shiny app, you should additionally fulfill the following dependencies:
+
+[PhantomJS](http://phantomjs.org/) (>= 2.1): For headless website calls.
+[Python](http://www.python.org/) (>=2.7.9) and the [selenium](http://selenium-python.readthedocs.io/) (>=3.0.1) module: For data extraction scripts.
+openPrimeR will automatically check for all dependencies and inform you about any missing dependencies when the package is attached.
+
+Note that the tool is still functional if there are missing external programs. However, we recommend that all dependencies are fulfilled to guarantee the best user experience.
+
+```{r openprimer, eval=F}
+library(openPrimeR)
+```
