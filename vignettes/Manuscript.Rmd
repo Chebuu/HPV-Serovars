@@ -193,9 +193,38 @@ DECIPHER::Add2DB(
 
 ```{r risk_groups}
 # Genital cancer risk groups
-gA <- system.file('GroupA.fasta', 'HPVSerovars') # Highest risk
-gB <- system.file('GroupB.fasta', 'HPVSerovars') # Other high risk
-gC <- system.file('GroupC.fasta', 'HPVSerovars') # Probably high risk
+gA <- Biostrings::readDNAStringSet('inst/extdata/GroupA.fasta') 
+# system.file('GroupA.fasta', 'HPVSerovars') # Highest risk
+gB <- Biostrings::readDNAStringSet('inst/extdata/GroupB.fasta') 
+# system.file('GroupB.fasta', 'HPVSerovars') # Other high risk
+gC <- Biostrings::readDNAStringSet('inst/extdata/GroupC.fasta') 
+# system.file('GroupC.fasta', 'HPVSerovars') # Probably high ris
+
+dbConn <- dbConnect(RSQLite::SQLite(), ':memory:')
+
+Seqs2DB(
+  c(gA,gB,gC), 
+  type = 'XStringSet', 
+  dbFile = dbConn, 
+  identifier = ''
+)
+
+Add2DB(
+  data.frame(
+    identifier = c(
+      rep('A', length(gA)), 
+      rep('B', length(gB)), 
+      rep('C', length(gC))
+    )
+  ), 
+  dbConn
+)
+
+gABC.synt <- FindSynteny(dbConn)
+
+summary(gABC.synt)
+pairs(gABC.synt, boxBlocks=TRUE)
+unlist(AlignSynteny(gABC.synt, dbConn)) %>% head(4)
 ```
 
 # NCBI Data
