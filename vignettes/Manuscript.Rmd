@@ -1,24 +1,18 @@
 ---
-title: Designing PCR Diagnostics that Discriminate HPV Serotypes by DNA Sequence
-author: chebuu
-output: github_document
+title: Designing PCR diagnostics to discriminate HPV serotypes by DNA sequence
+author: Chebuu
+output: rmarkdown::github_document
+# bibliography: citations.bib
+# includes:
+#   in_header:
+#     - preamble.tex
+#     - common.tex
 ---
-
-
-<!-- --- -->
-<!-- ... -->
-<!-- bibliography: citations.bib -->
-<!-- includes: -->
-<!--   in_header:  -->
-<!--     - preamble.tex -->
-<!--     - common.tex -->
-<!-- ... -->
-<!-- --- -->
 
 
 ```{r setup, include=F}
 library(knitr)
-knitr::opts_chunk$set(eval = T, echo = T)
+knitr::opts_chunk$set(eval = F, echo = T)
 ```
 
 # Introduction
@@ -48,7 +42,7 @@ vignette('Installing-OligoArrayAux', package = 'Design_Group_Specific_Primers')
 
 ### Install Bioconductor packages
 [https://www.bioconductor.org/](https://www.bioconductor.org/)
-```{r biocs, eval=F, error=F, warning=F, message=F}
+```{r biocs, echo=T, eval=F, error=F, warning=F, message=F}
 # Install from Bioconductor
 if (!requireNamespace("BiocManager", quietly = T))
   install.packages("BiocManager")
@@ -67,7 +61,7 @@ browseVignettes("DECIPHER")
 
 ### Load packages
 
-```{r packs, eval = T, message=FALSE, warning=FALSE, error=FALSE}
+```{r packs, eval=T, message=FALSE, warning=FALSE, error=FALSE}
 library(dplyr)
 library(tidyr)
 library(stringr)
@@ -189,8 +183,6 @@ oligos.L1 <- DesignPrimers(
 
 head(oligos.L1)
 ```
-
-Honestly, I don't really understand the dimensions of the dataframe output by `DECIPHER::DesignPimers`. If I remember correctly, it's a 7x17 matrix where each cell holds a list of 5 oligos. Unfortunately, I can't print the matrix to stdout, which makes debugging slow, so I'll just deal with this issue later I guess...
 
 Plot hybridization curves for the reverse compliment of each primer pair (5) in each primer set (7). 
 
