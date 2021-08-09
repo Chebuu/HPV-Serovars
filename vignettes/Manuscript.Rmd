@@ -19,13 +19,13 @@ knitr::opts_chunk$set(eval = F, echo = T)
 The first infectious cause of cancer was identified in 1911 by Peyton Rous who demonstrated the transmissibility of a tumor in fowl through injection of sub 0.2 micron filtrate of the tumor \cite{Rous_1911}.
 
 #### Installing this package
-```{r, eval=F}
+```{r eval=F}
 # devtools::install_github('hebuu/HPV-Serovars')
 remotes::install_github('chebuu/HPV-Serovars)
 ```
 
 #### Loading this package in R environment
-```{r, eval=F}
+```{r eval=F}
 library(HPVSerovars)
 ```
 
@@ -74,8 +74,6 @@ library(stringr)
 
 library(Biostrings)
 library(DECIPHER)
-
-library(HPVSerovars)
 ```
 
 #### Make an alignment utility:
@@ -91,11 +89,11 @@ doAlignment <- function(xset) {
 
 # Wiki Pheno Data
 
-I copied the tables from [Wiki: Human_papillomavirus_infection ](https://en.wikipedia.org/wiki/Human_papillomavirus_infection) and included them in the R package assoc. w/ this document `github.com/Chebuu/HPV-Serovars`.
+I copied the tables from [Wiki: Human_papillomavirus_infection ](https://en.wikipedia.org/wiki/Human_papillomavirus_infection) and included them in the R package associated with this document `github.com/Chebuu/HPV-Serovars`.
 
 ```{r wikidata}
-data(HPV.Sequelae)
-data(HPV.GenitalCancerRisk)
+data(HPV.Sequelae, package='HPVSerovars')
+data(HPV.GenitalCancerRisk, package='HPVSerovars')
 ```
 
 The Wiki data contains phenotypic categorizations of several HPV strains. It's useful for testing.
@@ -115,9 +113,32 @@ knitr::kable(
 hist(unlist(HPV), max(unlist(HPV)), col='blue'); head(HPV, 4)
 ```
 
+Here I've included the Case Statistics from Wikipedia too, although I have no use for it right now, so it's not saved as an .rda file in the package yet. 
+
+```{r wikidata_}
+# N HPV-associated CA 2008–2012 in the USA
+HPV.CaseStatistics <- data.frame(
+  Cervix = c(11771, 10700, 7800),
+  Oropharynx.M = c(12638, 9100,  8000),
+  Oropharynx.W = c(3100,	 2000,  1600),
+  Vulva = c(3554,	 2400,  1700),
+  Anus.W = c(3260,	 3000,  2600),
+  Anus.M = c(1750,	 1600,  1400),
+  Penis = c(1168,	 700,   600 ),
+  Vagina = c(802,   600,   400 ),
+  Rectum.M = c(513,   500,   400 ),
+  Rectum.W = c(237,   200,   200 ),
+  row.names = c(
+    'Avg. N annual', 
+    'HPV attributable (est.)', 
+    'HPV 16/18 attributable (est.)'
+  )
+)
+```
+
 # NCBI Data
 
-I included GenBank queries for all the HPV DNA in this repo. If you want to run them just paste in the search bar at: [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore) 
+Below are my GenBank queries for all the HPV DNA in this repo. To run them, just paste the following queries in the search bar at: [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore) 
 
 ## All HPV
 [https://www.ncbi.nlm.nih.gov/nuccore](https://www.ncbi.nlm.nih.gov/nuccore)
@@ -150,7 +171,7 @@ AND Oral[All Fields]
 
 ### L1 gene
 
-A collection of *l1* DNA sequences (avg. ~600bp) from various oral isolates of HPV (extracted from results of GenBank query above) are aligned and loaded in SQLite (RAM) along with annotations from GenBank that describe the serotype of each isolate.
+A collection of *l1* DNA sequences (avg. ~600bp) from various oral isolates of HPV (extracted from results of GenBank query above) are aligned and loaded in SQLite along with annotations from GenBank that describe each clinical isolate.
 
 #### Design HPV16-specific F/R primers using `DECIPHER` utilities.
 
