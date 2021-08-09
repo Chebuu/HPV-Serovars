@@ -115,25 +115,47 @@ hist(unlist(HPV), max(unlist(HPV)), col='blue'); head(HPV, 4)
 
 Here I've included the Case Statistics from Wikipedia too, although I have no use for it right now, so it's not saved as an .rda file in the package yet. 
 
-```{r wikidata_}
+```{r wikidata_CaseStats}
 # N HPV-associated CA 2008–2012 in the USA
-HPV.CaseStatistics <- data.frame(
-  Cervix = c(11771, 10700, 7800),
-  Oropharynx.M = c(12638, 9100,  8000),
-  Oropharynx.W = c(3100,	 2000,  1600),
-  Vulva = c(3554,	 2400,  1700),
-  Anus.W = c(3260,	 3000,  2600),
-  Anus.M = c(1750,	 1600,  1400),
-  Penis = c(1168,	 700,   600 ),
-  Vagina = c(802,   600,   400 ),
-  Rectum.M = c(513,   500,   400 ),
-  Rectum.W = c(237,   200,   200 ),
-  row.names = c(
-    'Avg. N annual', 
-    'HPV attributable (est.)', 
-    'HPV 16/18 attributable (est.)'
+HPV.CaseStatistics <- t(
+  data.frame(
+    Oropharynx.M = c(12638, 9100, 8000),
+    Oropharynx.W = c(3100, 2000, 1600),
+    Penis = c(1168,	700, 600),
+    Vulva = c(3554, 2400, 1700),
+    Cervix = c(11771, 10700, 7800),
+    Vagina = c(802, 600, 400),
+    Anus.M = c(1750, 1600, 1400),
+    Anus.W = c(3260, 3000, 2600),
+    Rectum.M = c(237, 200, 200 ),
+    Rectum.W = c(513, 500, 400 ),
+    row.names = c(
+      'Avg. N annual CA | ', 
+      'HPV attributable CA (est.) | ', 
+      'HPV 16/18 attributable CA (est.) |'
+    )
   )
 )
+
+knitr::kable(
+  HPV.CaseStatistics,
+  caption = 'Estimated HPV associated cancers (2008-2012)'
+)
+```
+```{r wikidata_CaseStatsSumm}
+library(vtable)
+
+# HPV/CA
+sum(HPV.CaseStatistics[,2]) / 
+  sum(HPV.CaseStatistics[,1]) 
+
+# HiRsk/CA
+sum(HPV.CaseStatistics[,3]) / 
+  sum(HPV.CaseStatistics[,1])
+
+# HiRsk/HPV
+sum(HPV.CaseStatistics[,3]) / 
+  sum(HPV.CaseStatistics[,2])
 ```
 
 # NCBI Data
