@@ -19,8 +19,13 @@ knitr::opts_chunk$set(eval = F, echo = T)
 The first infectious cause of cancer was identified in 1911 by Peyton Rous who demonstrated the transmissibility of a tumor in fowl through injection of sub 0.2 micron filtrate of the tumor \cite{Rous_1911}.
 
 #### Installing this package
-```{r hpvs, eval=F}
-devtools::install_github('Chebuu/HPV-Serovars')
+```{r, eval=F}
+# devtools::install_github('hebuu/HPV-Serovars')
+remotes::install_github('chebuu/HPV-Serovars)
+```
+
+#### Loading this package in R environment
+```{r, eval=F}
 library(HPVSerovars)
 ```
 
@@ -46,6 +51,7 @@ vignette('Installing-OligoArrayAux', package = 'Design_Group_Specific_Primers')
 # Install from Bioconductor
 if (!requireNamespace("BiocManager", quietly = T))
   install.packages("BiocManager")
+
 BiocManager::install("Biostrings")
 BiocManager::install("DECIPHER")
 
